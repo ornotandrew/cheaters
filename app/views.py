@@ -4,7 +4,7 @@ from django.template import RequestContext
 from datetime import datetime
 # Create your views here.
 
-def home(request):
+def index(request):
     assert isinstance(request, HttpRequest)
     return render(
         request,
