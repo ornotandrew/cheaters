@@ -1,5 +1,4 @@
-app/__pycache__/
-cheaters/__pycache__/
+__pycache__/
 cheaters/wsgi.sublime-workspace
 .idea
 db.sqlite3
