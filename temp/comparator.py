@@ -4,9 +4,9 @@ def compare():
     source_a = a.read()
     print(len(source_a))
     source_b = b.read()
-    hashes_a = [get_hash_value(x) for x in get_ngrams(source_a)]
+    hashes_a = [get_hash_value(x[0]) for x in get_ngrams(source_a)]
     print(len(hashes_a)*10)
-    hashes_b = [get_hash_value(x) for x in get_ngrams(source_b)]
+    hashes_b = [get_hash_value(x[0]) for x in get_ngrams(source_b)]
     a.close()
     b.close()
     hash_intersection = len(set(hashes_a) & set(hashes_b))
@@ -34,18 +34,29 @@ def get_ngrams(file_contents, n=10):
     """
     :param file_contents: One long, continuous (normalized) string
     :param n: The minimum number of consecutive characters to be a match
+    :return A list of the form [ngram, [lines the ngram appears on]]
     """
     ngrams = []
+
+    # generate a map which will tell you what line you are on, given your index in file contents
+    index_line_map = [1] + [0]*(len(file_contents)-1)
+    for i in range(1, len(file_contents)):
+        if file_contents[i-1] == "\n":
+            index_line_map[i] = index_line_map[i-1]+1
+        else:
+            index_line_map[i] = index_line_map[i-1]
+
     for i in range(len(file_contents)-n+1):
-        ngrams.append(file_contents[i:i+n])
+        line_range = list(set(index_line_map[i:i+n]))
+        ngrams.append([file_contents[i:i+n], line_range])
     return ngrams
 
 
-def get_hash_value(raw_string):
+def get_hash_value(ngram_pairs):
     hash_value = 0
-    for i in range(len(raw_string)):
+    for i in range(len(ngram_pairs)):
         # TODO: use a rolling hash
-        hash_value += ord(raw_string[i])*10**(len(raw_string)-i-1)
+        hash_value += ord(ngram_pairs[i])*10**(len(ngram_pairs)-i-1)
     return hash_value
 
 
