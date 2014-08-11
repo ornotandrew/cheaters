@@ -1,7 +1,7 @@
 from django.conf.urls import url,patterns
-
+from app import views
 urlpatterns = patterns('',
-	url(r'^', 'app.views.index', name='index'),
 
+    url(r'^',views.UploadFileView.as_view(),name='fileupload'),
 
 )

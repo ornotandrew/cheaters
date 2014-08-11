@@ -2,3 +2,4 @@ __pycache__/
 cheaters/wsgi.sublime-workspace
 .idea
 db.sqlite3
+fileTemp/*

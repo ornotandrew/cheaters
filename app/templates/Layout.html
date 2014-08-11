@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/site.css' %}" />
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.min.js"></script>
-  
+    <script src="{%  static 'js/dropzone.js'%}"></script>
     
 </head>
 
@@ -26,7 +26,7 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="{% url 'index' %}">Home</a></li>
+                    <li><a href="{% url 'fileupload' %}">Home</a></li>
                     
                 </ul>
                 
