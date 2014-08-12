@@ -40,10 +40,12 @@ def preprocessor(source):
         # This is necessary, because tokenize.untokenize() is not being used due 
         # to the fact that it results in code with extensive amounts of 
         # oddly-placed whitespace.
-        if start_line > last_lineno:
-            last_col = 0;
-        if(start_col > last_col):
-            out += (" " * (start_col - last_col)) 
+
+      #  if start_line > last_lineno:
+       #     last_col = 0;
+        #if(start_col > last_col):
+         #   out += (" " * (start_col - last_col))
+
         # Remove comments:
         if token_type == tokenize.COMMENT:
             pass
@@ -72,12 +74,12 @@ def preprocessor(source):
                     #         "The spaces before this string do not get a token"
                     #     ]
         else:
-            out += token_string
+            out += token_string.replace(" ", "")
         prev_toktype = token_type
         last_col = end_col
         last_lineno = end_line
     # Remove all blank lines (including spaces):
-    out = "".join([x for x in out.strip().splitlines(True) if x.strip("\r\n").strip()])
+    #out = "".join([x for x in out.strip().splitlines(True) if x.strip("\r\n").strip()])
     return out
 
 def main():
