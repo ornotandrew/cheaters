@@ -1,3 +1,6 @@
+from time import time
+
+
 def compare():
     a = open("a.py", "r")
     b = open("b.py", "r")
@@ -54,20 +57,38 @@ def get_ngrams(file_contents, n=10):
 
 
 def get_hash_values(ngram_pairs):
-    hash_values = [None]*len(ngram_pairs)
-    for hash_index in range(len(ngram_pairs)):
-        _hash_value = 0
+    """
+    This replaces the ngrams with their hashes instead of making a new list
+    :return: the original ngram_pairs, but now of the form [hash, [lines the ngram appears on]]
+    """
+    start_time = time()
+
+    # run the first hash normally
+    _first_hash_in_prev_window = 0
+    _current_ngram = ngram_pairs[0][0]
+    _hash_value = 0
+    for i in range(len(_current_ngram)):
+        _hash_value += ord(_current_ngram[i])*10**(len(_current_ngram)-i-1)
+        if i == 0:
+            _first_hash_in_prev_window = _hash_value
+    ngram_pairs[0][0] = _hash_value
+
+    # then use the rolling function
+    for hash_index in range(1, len(ngram_pairs)):
         _current_ngram = ngram_pairs[hash_index][0]
-        for i in range(len(_current_ngram)):
-            # TODO: use a rolling hash
-            _hash_value += ord(_current_ngram[i])*10**(len(_current_ngram)-i-1)
-        hash_values[hash_index] = [_hash_value, ngram_pairs[hash_index][1]]
-    return hash_values
+        _temp = ord(_current_ngram[0])*10**(len(_current_ngram)-1)
+        _prev_hash = ngram_pairs[hash_index-1][0]
+        ngram_pairs[hash_index][0] = (_prev_hash - _first_hash_in_prev_window)*10 + ord(ngram_pairs[hash_index][0][-1])
+        _first_hash_in_prev_window = _temp
+
+    end_time = time()
+    print(ngram_pairs)
+    print("Hashing {0} ngrams took {1:.5f}ms".format(len(ngram_pairs), (end_time-start_time)*1e3))
+    return ngram_pairs
 
 
 def winnow(hashes, w=25):
     """
-    TODO: Reference this?
     We define variables in such a way that:
         1. If there is a substring match at least as long as the guaranteed threshold, t, then this match is detected
         2. We do not detect any matches shorter than the noise threshold, n
