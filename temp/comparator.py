@@ -29,7 +29,7 @@ def compare():
                                                            len(fingerprint_b)/len(source_b)*100))
 
     result = compare_fingerprints(fingerprint_a, fingerprint_b)
-    print("{0} of these are intersect ({1:.2f}%)".format(len(result[1]), result[0]))
+    print("{0} lines match ({1:.2f}%)".format(len(result[1]), result[0]))
     print("The matching lines are:")
     for lines in result[1]:
         print(lines)
