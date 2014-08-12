@@ -8,8 +8,10 @@ from django.views.generic.edit import FormView
 from django.core.urlresolvers import reverse_lazy
 from django.contrib import messages
 # Create your views here.
+
+
 class IndexView(View):
-    def get(self,request):
+    def get(self, request):
         assert isinstance(request, HttpRequest)
         return render(
             request,
@@ -22,17 +24,29 @@ class IndexView(View):
             })
         )
 
+
 class UploadFileView(FormView):
     template_name = 'index.html'
     form_class = UploadFileForm
-    success_url = reverse_lazy('fileupload')
-
-
+    success_url = reverse_lazy('report')
 
     def form_valid(self, form):
         form.save(commit=True)
         messages.success(self.request, 'File uploaded!', fail_silently=True)
 
         return super(UploadFileView, self).form_valid(form)
+
+
+class ReportView(View):
+    def get(self, request):
+        return render(
+            request,
+            'report.html',
+            RequestContext(request,
+            {
+                'title': 'Report Page',
+                'year': datetime.now().year
+            })
+        )
 
 
