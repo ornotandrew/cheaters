@@ -7,6 +7,7 @@ from django.views.generic import View
 from django.views.generic.edit import FormView
 from django.core.urlresolvers import reverse_lazy
 from django.contrib import messages
+from app.lib.comparator import compare
 # Create your views here.
 
 

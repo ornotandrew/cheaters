@@ -8,5 +8,6 @@ class Submission(models.Model):
     #course_id = models.CharField(max_length=10)
     #assignment_number = models.IntegerField()
     file = models.FileField(upload_to='.')
+    file2 = models.FileField(upload_to='.')
     #fingerprint = models.TextField()
     #date = models.DateTimeField('date submitted',default=datetime.now())

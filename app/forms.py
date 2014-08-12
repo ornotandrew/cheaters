@@ -5,4 +5,4 @@ from app.models import Submission
 class UploadFileForm(ModelForm):
     class Meta:
         model = Submission
-        fields = ['file']
+        fields = ['file','file2']
