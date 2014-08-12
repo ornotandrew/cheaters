@@ -1,12 +1,36 @@
-a=" "
-s="_"
-d="/"
-f="|"
-z="\\"
-x=")"
-c="("
-print(a,a,s,s,s,s,a,s,s,s,s,a,s,s,s,a,s,s,s,s,a,a,s,s,s,s,s,a,s,a,a,a,s,a,s,a,a,a,s,a,s,a,sep="")
-print(a,d,a,s,s,s,d,a,s,s,s,f,s,a,s,d,a,s,s,s,f,f,a,a,s,s,s,f,a,f,a,f,a,f,a,z,a,f,a,f,a,f,sep="")
-print(f,a,f,a,a,a,z,s,s,s,a,z,f,a,f,z,s,s,s,a,z,f,a,f,s,a,a,f,a,f,a,f,a,f,a,a,z,f,a,f,a,f,sep="")
-print(f,a,f,s,s,s,a,s,s,s,x,a,f,a,f,a,s,s,s,x,a,f,a,a,s,f,a,f,a,f,s,f,a,f,a,f,z,a,a,f,s,f,sep="")
-print(" ",z,s,s,s,s,f,s,s,s,s,d,s,s,s,f,s,s,s,s,d,f,s,f,a,a,a,a,z,s,s,s,d,f,s,f,a,z,s,c,a,x,sep="")
+"""Assignment 8 Question 4
+09 May 2014
+Jordan Kadish, Recursive Palindromic Prime"""
+import sys
+import question1
+import math
+sys.setrecursionlimit (30000)
+
+def PrimeNumber(StartNumber, Divide):
+    #Checking from 2 up until the square root
+    if StartNumber < 2:
+        return False
+    #2 is a prime
+    elif StartNumber == 2:
+        return True
+    elif (math.sqrt(StartNumber) + 1) > Divide:
+        if StartNumber % Divide == 0:
+            return False
+        else:
+            return PrimeNumber(StartNumber, Divide +1)
+    else:
+        return True 
+    
+def counter(FirstNumber, LastNumber):
+    #Base Check
+    if FirstNumber <= LastNumber:
+        #Pallindromic Prime check
+        if PrimeNumber(FirstNumber, 2) and question1.PalinCheck(FirstNumber):
+            print(FirstNumber)
+        counter(FirstNumber+1, LastNumber)
+
+FirstCheck = eval(input('Enter the starting point N: \n'))
+LastCheck = eval(input('Enter the ending point M: \n'))    
+
+print('The palindromic primes are: ')
+counter(FirstCheck, LastCheck)

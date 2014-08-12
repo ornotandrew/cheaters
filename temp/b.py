@@ -1,24 +1,14 @@
-a=" "
-JUNK = "ASDALSKJDAHLSUIDABW:KJBDSAUI:BW:JKLDBA:SUDBHA:SJDBAS:KDBJAS:KJDBAS"
-s="_"
-JUNK = "ASDALSKJDAHLSUIDABW:KJBDSAUI:BW:JKLDBA:SUDBHA:SJDBAS:KDBJAS:KJDBAS"
-d="/"
-JUNK = "ASDALSKJDAHLSUIDABW:KJBDSAUI:BW:JKLDBA:SUDBHA:SJDBAS:KDBJAS:KJDBAS"
-f="|"
-JUNK = "ASDALSKJDAHLSUIDABW:KJBDSAUI:BW:JKLDBA:SUDBHA:SJDBAS:KDBJAS:KJDBAS"
-z="\\"
-JUNK = "ASDALSKJDAHLSUIDABW:KJBDSAUI:BW:JKLDBA:SUDBHA:SJDBAS:KDBJAS:KJDBAS"
-x=")"
-JUNK = "ASDALSKJDAHLSUIDABW:KJBDSAUI:BW:JKLDBA:SUDBHA:SJDBAS:KDBJAS:KJDBAS"
-c="("
-JUNK = "ASDALSKJDAHLSUIDABW:KJBDSAUI:BW:JKLDBA:SUDBHA:SJDBAS:KDBJAS:KJDBAS"
-print(a,a,s,s,s,s,a,s,s,s,s,a,s,s,s,a,s,s,s,s,a,a,s,s,s,s,s,a,s,a,a,a,s,a,s,a,a,a,s,a,s,a,sep="")
-JUNK = "ASDALSKJDAHLSUIDABW:KJBDSAUI:BW:JKLDBA:SUDBHA:SJDBAS:KDBJAS:KJDBAS"
-print(a,d,a,s,s,s,d,a,s,s,s,f,s,a,s,d,a,s,s,s,f,f,a,a,s,s,s,f,a,f,a,f,a,f,a,z,a,f,a,f,a,f,sep="")
-JUNK = "ASDALSKJDAHLSUIDABW:KJBDSAUI:BW:JKLDBA:SUDBHA:SJDBAS:KDBJAS:KJDBAS"
-print(f,a,f,a,a,a,z,s,s,s,a,z,f,a,f,z,s,s,s,a,z,f,a,f,s,a,a,f,a,f,a,f,a,f,a,a,z,f,a,f,a,f,sep="")
-JUNK = "ASDALSKJDAHLSUIDABW:KJBDSAUI:BW:JKLDBA:SUDBHA:SJDBAS:KDBJAS:KJDBAS"
-print(f,a,f,s,s,s,a,s,s,s,x,a,f,a,f,a,s,s,s,x,a,f,a,a,s,f,a,f,a,f,s,f,a,f,a,f,z,a,a,f,s,f,sep="")
-JUNK = "ASDALSKJDAHLSUIDABW:KJBDSAUI:BW:JKLDBA:SUDBHA:SJDBAS:KDBJAS:KJDBAS"
-print(" ",z,s,s,s,s,f,s,s,s,s,d,s,s,s,f,s,s,s,s,d,f,s,f,a,a,a,a,z,s,s,s,d,f,s,f,a,z,s,c,a,x,sep="")
-JUNK = "ASDALSKJDAHLSUIDABW:KJBDSAUI:BW:JKLDBA:SUDBHA:SJDBAS:KDBJAS:KJDBAS"
+if __name__ == "__main__":
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "cheaters.settings")
+
+    from django.core.management import execute_from_command_line
+
+    execute_from_command_line(sys.argv)
+
+def counter(FirstNumber, LastNumber):
+    #Base Check
+    if FirstNumber <= LastNumber:
+        #Pallindromic Prime check
+        if PrimeNumber(FirstNumber, 2) and question1.PalinCheck(FirstNumber):
+            print(FirstNumber)
+        counter(FirstNumber+1, LastNumber)

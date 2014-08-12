@@ -1,6 +1,3 @@
-from time import time
-
-
 def compare():
     a = open("a.py", "r")
     b = open("b.py", "r")
@@ -24,21 +21,25 @@ def compare():
                                                                            len(hashes_a)/len(source_a)*100))
     print("File B has {0} hashes, {1} characters, {2:.2f}% of file".format(len(hashes_b), len(source_b),
                                                                            len(hashes_b)/len(source_b)*100))
-    print("{0} of these are intersect ({1:.2f}%)".format(hash_intersection,
-                                                         hash_intersection/min(len(hashes_a), len(hashes_b))*100))
+
     print("---After winnowing---")
     print("File A has {0} hashes, {1:.2f}% of file".format(len(fingerprint_a),
                                                            len(fingerprint_a)/len(source_a)*100))
     print("File B has {0} hashes, {1:.2f}% of file".format(len(fingerprint_b),
                                                            len(fingerprint_b)/len(source_b)*100))
-    print("{0} of these are intersect".format(len(set(x[0] for x in fingerprint_a) & set(x[0] for x in fingerprint_b))))
+
+    result = compare_fingerprints(fingerprint_a, fingerprint_b)
+    print("{0} of these are intersect ({1:.2f}%)".format(len(result[1]), result[0]))
+    print("The matching lines are:")
+    for lines in result[1]:
+        print(lines)
 
 
 def get_ngrams(file_contents, n=10):
     """
     :param file_contents: One long, continuous (normalized) string
     :param n: The minimum number of consecutive characters to be a match
-    :return A list of the form [ngram, [lines the ngram appears on]]
+    :return A list of the containing elements of the form [ngram, [lines the ngram appears on]]
     """
     ngrams = []
 
@@ -56,35 +57,31 @@ def get_ngrams(file_contents, n=10):
     return ngrams
 
 
-def get_hash_values(ngram_pairs):
+def get_hash_values(ngram_list):
     """
     This replaces the ngrams with their hashes instead of making a new list
     :return: the original ngram_pairs, but now of the form [hash, [lines the ngram appears on]]
     """
-    start_time = time()
 
     # run the first hash normally
     _first_hash_in_prev_window = 0
-    _current_ngram = ngram_pairs[0][0]
+    _current_ngram = ngram_list[0][0]
     _hash_value = 0
     for i in range(len(_current_ngram)):
         _hash_value += ord(_current_ngram[i])*10**(len(_current_ngram)-i-1)
         if i == 0:
             _first_hash_in_prev_window = _hash_value
-    ngram_pairs[0][0] = _hash_value
+    ngram_list[0][0] = _hash_value
 
     # then use the rolling function
-    for hash_index in range(1, len(ngram_pairs)):
-        _current_ngram = ngram_pairs[hash_index][0]
+    for hash_index in range(1, len(ngram_list)):
+        _current_ngram = ngram_list[hash_index][0]
         _temp = ord(_current_ngram[0])*10**(len(_current_ngram)-1)
-        _prev_hash = ngram_pairs[hash_index-1][0]
-        ngram_pairs[hash_index][0] = (_prev_hash - _first_hash_in_prev_window)*10 + ord(ngram_pairs[hash_index][0][-1])
+        _prev_hash = ngram_list[hash_index-1][0]
+        ngram_list[hash_index][0] = (_prev_hash - _first_hash_in_prev_window)*10 + ord(ngram_list[hash_index][0][-1])
         _first_hash_in_prev_window = _temp
 
-    end_time = time()
-    print(ngram_pairs)
-    print("Hashing {0} ngrams took {1:.5f}ms".format(len(ngram_pairs), (end_time-start_time)*1e3))
-    return ngram_pairs
+    return ngram_list
 
 
 def winnow(hashes, w=25):
@@ -115,3 +112,31 @@ def winnow(hashes, w=25):
             fingerprint.append(min_hash)
 
     return fingerprint
+
+
+def compare_fingerprints(f_a, f_b):
+    """
+    :param f_a: Fingerprint A, containing it's hash and line numbers
+    :param f_b: Fingerprint B, containing it's hash and line numbers
+    :return: A list of the form [match %, [(line in A, line in B),...]]
+    """
+
+    result = [0, []]
+
+    dict_f_a = dict(f_a)
+    dict_f_b = dict(f_b)
+    # we can now get a list of strings of hashes which match
+    hash_matches = set(dict_f_a.keys()) & set(dict_f_b.keys())
+    result[0] = len(hash_matches)/min(len(f_a), len(f_b))*100
+
+    hash_map = {}
+    for match in hash_matches:
+        line_list_a = dict_f_a[match]
+        line_list_b = dict_f_b[match]
+        for i in range(len(line_list_a)):
+            hash_map[str(1000*line_list_a[i]+line_list_b[i])] = (line_list_a[i], line_list_b[i])
+
+    result[1] = sorted(list(hash_map.values()))
+    return result
+
+compare()
