@@ -1,10 +1,5 @@
-def compare(filea, fileb):
-    a = open(filea, "r")
-    b = open(fileb, "r")
-    source_a = a.read()
-    source_b = b.read()
-    a.close()
-    b.close()
+def compare(source_a, source_b):
+
     ngrams_a = get_ngrams(source_a)
     ngrams_b = get_ngrams(source_b)
     hashes_a = get_hash_values(ngrams_a)
@@ -33,6 +28,8 @@ def compare(filea, fileb):
     print("The matching lines are:")
     for lines in result[1]:
         print(lines)
+
+    return result
 
 
 def get_ngrams(file_contents, n=10):
