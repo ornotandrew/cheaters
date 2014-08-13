@@ -7,7 +7,9 @@ from django.views.generic import View
 from django.views.generic.edit import FormView
 from django.core.urlresolvers import reverse_lazy
 from django.contrib import messages
-from app.lib.comparator import compare
+from cheaters import settings
+import os
+from app.lib import comparator
 # Create your views here.
 
 
@@ -34,7 +36,9 @@ class UploadFileView(FormView):
     def form_valid(self, form):
         form.save(commit=True)
         messages.success(self.request, 'File uploaded!', fail_silently=True)
-
+        filepath1 = os.path.join(settings.MEDIA_ROOT, self.request.FILES['file'].name)
+        filepath2 = os.path.join(settings.MEDIA_ROOT, self.request.FILES['file2'].name)
+        comparator.compare(filepath1, filepath2)
         return super(UploadFileView, self).form_valid(form)
 
 

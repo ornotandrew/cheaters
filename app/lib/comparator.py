@@ -139,4 +139,4 @@ def compare_fingerprints(f_a, f_b):
     result[1] = sorted(list(hash_map.values()))
     return result
 
-compare()
+
