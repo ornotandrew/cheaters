@@ -1,4 +1,4 @@
-ontributors:
+Contributors:
 Andrew Van Rooyen
 Darren Silke
 Brendan Ball
