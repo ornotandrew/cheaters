@@ -19,7 +19,6 @@ def preprocess(source):
         # docstrings:
         elif token_type == tokenize.STRING:
             if token_string[0:3] == r'"""' and token_string[-3:] == r'"""':
-                print("X:", token_string)
                 out += "\n"*token_string.count("\n")
             else:
                 out += token_string
@@ -27,8 +26,7 @@ def preprocess(source):
         else:
             out += token_string.replace(" ", "")
 
-    # eat the last extra newline
-    return out[:-1]
+    return out
 
 
 def normalize(filename):
