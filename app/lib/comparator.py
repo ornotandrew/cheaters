@@ -11,23 +11,8 @@ def compare(source_a, source_b):
 
     # the percentages below are comparing hashes (numbers) to the number of characters in the files
     # this is not an accurate representation of the size in memory, but is good enough
-    print("---Before winnowing---")
-    print("File A has {0} hashes, {1} characters, {2:.2f}% of file".format(len(hashes_a), len(source_a),
-                                                                           len(hashes_a)/len(source_a)*100))
-    print("File B has {0} hashes, {1} characters, {2:.2f}% of file".format(len(hashes_b), len(source_b),
-                                                                           len(hashes_b)/len(source_b)*100))
-
-    print("---After winnowing---")
-    print("File A has {0} hashes, {1:.2f}% of file".format(len(fingerprint_a),
-                                                           len(fingerprint_a)/len(source_a)*100))
-    print("File B has {0} hashes, {1:.2f}% of file".format(len(fingerprint_b),
-                                                           len(fingerprint_b)/len(source_b)*100))
-
     result = compare_fingerprints(fingerprint_a, fingerprint_b)
-    print("{0} lines match ({1:.2f}%)".format(len(result[1]), result[0]))
-    print("The matching lines are:")
-    for lines in result[1]:
-        print(lines)
+
 
     return result
 

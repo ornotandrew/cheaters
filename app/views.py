@@ -19,13 +19,12 @@ class IndexView(View):
         return render(
             request,
             'index.html',
-            RequestContext(request,
             {
                 'title':'Home Page',
                 'year':datetime.now().year,
                 'form': UploadFileForm()
             })
-        )
+
 
 
 class UploadFileView(FormView):
@@ -40,9 +39,9 @@ class UploadFileView(FormView):
         filepath1 = os.path.join(settings.MEDIA_ROOT, self.request.FILES['file'].name)
         filepath2 = os.path.join(settings.MEDIA_ROOT, self.request.FILES['file2'].name)
 
-        comparator.compare(preprocessor.normalize(filepath1), preprocessor.normalize(filepath2))
+        comparison = comparator.compare(preprocessor.normalize(filepath1), preprocessor.normalize(filepath2))
 
-        return self.render_to_response('report.html')
+        return render(self.request,'report.html',{'data' : comparison})
 
 
 class ReportView(View):
@@ -50,11 +49,10 @@ class ReportView(View):
         return render(
             request,
             'report.html',
-            RequestContext(request,
             {
                 'title': 'Report Page',
                 'year': datetime.now().year
             })
-        )
+
 
 
