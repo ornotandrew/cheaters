@@ -1,38 +1,24 @@
+import time
 def compare(source_a, source_b):
 
     ngrams_a = get_ngrams(source_a)
     ngrams_b = get_ngrams(source_b)
     hashes_a = get_hash_values(ngrams_a)
     hashes_b = get_hash_values(ngrams_b)
-
-    hash_intersection = len(set([x[0] for x in hashes_a]) & set([x[0] for x in hashes_b]))
     fingerprint_a = winnow(hashes_a)
     fingerprint_b = winnow(hashes_b)
 
     # the percentages below are comparing hashes (numbers) to the number of characters in the files
     # this is not an accurate representation of the size in memory, but is good enough
-    print("---Before winnowing---")
-    print("File A has {0} hashes, {1} characters, {2:.2f}% of file".format(len(hashes_a), len(source_a),
-                                                                           len(hashes_a)/len(source_a)*100))
-    print("File B has {0} hashes, {1} characters, {2:.2f}% of file".format(len(hashes_b), len(source_b),
-                                                                           len(hashes_b)/len(source_b)*100))
-
-    print("---After winnowing---")
-    print("File A has {0} hashes, {1:.2f}% of file".format(len(fingerprint_a),
-                                                           len(fingerprint_a)/len(source_a)*100))
-    print("File B has {0} hashes, {1:.2f}% of file".format(len(fingerprint_b),
-                                                           len(fingerprint_b)/len(source_b)*100))
-
     result = compare_fingerprints(fingerprint_a, fingerprint_b)
-    print("{0} lines match ({1:.2f}%)".format(len(result[1]), result[0]))
-    print("The matching lines are:")
-    for lines in result[1]:
-        print(lines)
+
+    # make result[0] a percentage of total lines, since we have the sources up here
+    result[0] = int(result[0]/min(source_a.count("\n"), source_b.count("\n"))*100)
 
     return result
 
 
-def get_ngrams(file_contents, n=10):
+def get_ngrams(file_contents, n=15):
     """
     :param file_contents: One long, continuous (normalized) string
     :param n: The minimum number of consecutive characters to be a match
@@ -51,6 +37,7 @@ def get_ngrams(file_contents, n=10):
     for i in range(len(file_contents)-n+1):
         line_range = list(set(index_line_map[i:i+n]))
         ngrams.append([file_contents[i:i+n], line_range])
+
     return ngrams
 
 
@@ -81,7 +68,7 @@ def get_hash_values(ngram_list):
     return ngram_list
 
 
-def winnow(hashes, w=25):
+def winnow(hashes, w=20):
     """
     We define variables in such a way that:
         1. If there is a substring match at least as long as the guaranteed threshold, t, then this match is detected
@@ -115,7 +102,7 @@ def compare_fingerprints(f_a, f_b):
     """
     :param f_a: Fingerprint A, containing it's hash and line numbers
     :param f_b: Fingerprint B, containing it's hash and line numbers
-    :return: A list of the form [match %, [(line in A, line in B),...]]
+    :return: A list of the form [number of matching lines, [(line in A, line in B),...]]
     """
 
     result = [0, []]
@@ -124,7 +111,6 @@ def compare_fingerprints(f_a, f_b):
     dict_f_b = dict(f_b)
     # we can now get a list of strings of hashes which match
     hash_matches = set(dict_f_a.keys()) & set(dict_f_b.keys())
-    result[0] = len(hash_matches)/min(len(f_a), len(f_b))*100
 
     hash_map = {}
     for match in hash_matches:
@@ -133,6 +119,7 @@ def compare_fingerprints(f_a, f_b):
         for i in range(len(line_list_a)):
             hash_map[str(1000*line_list_a[i]+line_list_b[i])] = (line_list_a[i], line_list_b[i])
 
+    result[0] = len(hash_map)
     result[1] = sorted(list(hash_map.values()))
     return result
 
