@@ -38,8 +38,8 @@ class UploadFileView(FormView):
         filepath_1 = os.path.join(settings.MEDIA_ROOT, submission.file.name)
         filepath_2 = os.path.join(settings.MEDIA_ROOT, submission.file2.name)
 
-        comparator = Comparator()
-        result = comparator.compare(preprocessor.normalize(filepath_1), preprocessor.normalize(filepath_2))
+        comparator = Comparator(preprocessor.normalize(filepath_1),preprocessor.normalize(filepath_2))
+        result = comparator.compare()
 
         source1 = highlight(filepath_1, [x[0] for x in result[1]])
         source2 = highlight(filepath_2, [x[1] for x in result[1]])
