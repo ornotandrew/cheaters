@@ -33,15 +33,12 @@ class UploadFileView(FormView):
     success_url = reverse_lazy('report')
 
     def form_valid(self, form):
-        form.save(commit=True)
-        messages.success(self.request, 'File uploaded!', fail_silently=True)
+        submission = form.save(commit=True)
 
-        filepath1 = os.path.join(settings.MEDIA_ROOT, self.request.FILES['file'].name)
-        filepath2 = os.path.join(settings.MEDIA_ROOT, self.request.FILES['file2'].name)
-
+        filepath1 = os.path.join(settings.MEDIA_ROOT, submission.file.name)
+        filepath2 = os.path.join(settings.MEDIA_ROOT, submission.file2.name)
         comparison = comparator.compare(preprocessor.normalize(filepath1), preprocessor.normalize(filepath2))
 
-        print(comparison)
         source1 = highlight(filepath1, comparison[1][0])
         source2 = highlight(filepath2, comparison[1][1])
         return render(self.request, 'report.html', {'data': comparison, 'percent': comparison[0], 'file1': source1, 'file2': source2})
