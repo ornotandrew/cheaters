@@ -19,13 +19,12 @@ class IndexView(View):
         return render(
             request,
             'index.html',
-            RequestContext(request,
             {
                 'title':'Home Page',
                 'year':datetime.now().year,
                 'form': UploadFileForm()
             })
-        )
+
 
 
 class UploadFileView(FormView):
@@ -40,9 +39,11 @@ class UploadFileView(FormView):
         filepath1 = os.path.join(settings.MEDIA_ROOT, self.request.FILES['file'].name)
         filepath2 = os.path.join(settings.MEDIA_ROOT, self.request.FILES['file2'].name)
 
-        comparator.compare(preprocessor.normalize(filepath1), preprocessor.normalize(filepath2))
-
-        return self.render_to_response('report.html')
+        comparison = comparator.compare(preprocessor.normalize(filepath1), preprocessor.normalize(filepath2))
+        print(comparison)
+        source1 = highlight(filepath1, comparison[1][0])
+        source2 = highlight(filepath2, comparison[1][1])
+        return render(self.request, 'report.html', {'data': comparison, 'percent': comparison[0], 'file1': source1, 'file2': source2})
 
 
 class ReportView(View):
@@ -50,11 +51,20 @@ class ReportView(View):
         return render(
             request,
             'report.html',
-            RequestContext(request,
             {
                 'title': 'Report Page',
                 'year': datetime.now().year
             })
-        )
 
 
+
+def highlight(filepath, line_numbers):
+    with open(filepath, "r") as file:
+        source = list(file)
+    print(len(source))
+    print(line_numbers[-1])
+    for i in line_numbers:
+        if not i >= len(source):
+            source[i] = "<span class=\"highlight\">"+source[i]+"</span>"
+
+    return "".join(source)
