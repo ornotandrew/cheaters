@@ -18,7 +18,7 @@ def compare(source_a, source_b):
     return result
 
 
-def get_ngrams(file_contents, n=15):
+def get_ngrams(file_contents, n=10):
     """
     :param file_contents: One long, continuous (normalized) string
     :param n: The minimum number of consecutive characters to be a match
@@ -35,7 +35,8 @@ def get_ngrams(file_contents, n=15):
             index_line_map[i] = index_line_map[i-1]
 
     for i in range(len(file_contents)-n+1):
-        line_range = list(set(index_line_map[i:i+n]))
+        line_range_raw = index_line_map[i:i+n]
+        line_range = list(set([x for x in line_range_raw if line_range_raw.count(x) > 1]))
         ngrams.append([file_contents[i:i+n], line_range])
 
     return ngrams
@@ -68,7 +69,7 @@ def get_hash_values(ngram_list):
     return ngram_list
 
 
-def winnow(hashes, w=20):
+def winnow(hashes, w=6):
     """
     We define variables in such a way that:
         1. If there is a substring match at least as long as the guaranteed threshold, t, then this match is detected
@@ -122,13 +123,6 @@ def compare_fingerprints(f_a, f_b):
 
     result[0] = len(hash_map)
     result[1] = sorted(list(hash_map.values()))
-    list1 = []
-    list2 = []
-    for i in range(len(result[1])):
-        list1.append(result[1][i][0])
-        list2.append(result[1][i][1])
-    comparison_list = [list1, list2]
-    result[1] = comparison_list
     return result
 
 
