@@ -13,7 +13,11 @@ def compare(source_a, source_b):
     result = compare_fingerprints(fingerprint_a, fingerprint_b)
 
     # make result[0] a percentage of total lines, since we have the sources up here
-    result[0] = int(result[0]/min(source_a.count("\n"), source_b.count("\n"))*100)
+    # we don't want to count blank lines, because we are not matching on blank lines
+    num_lines_a = len([x for x in source_a.split("\n") if x != ""])
+    num_lines_b = len([x for x in source_b.split("\n") if x != ""])
+
+    result[0] = int(result[0]/min(num_lines_a, num_lines_b)*100)
 
     return result
 
