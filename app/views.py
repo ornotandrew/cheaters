@@ -20,11 +20,10 @@ class IndexView(View):
             request,
             'index.html',
             {
-                'title':'Home Page',
-                'year':datetime.now().year,
+                'title': 'Home Page',
+                'year': datetime.now().year,
                 'form': UploadFileForm()
             })
-
 
 
 class UploadFileView(FormView):
@@ -35,17 +34,16 @@ class UploadFileView(FormView):
     def form_valid(self, form):
         submission = form.save(commit=True)
 
-        filepath1 = os.path.join(settings.MEDIA_ROOT, submission.file.name)
-        filepath2 = os.path.join(settings.MEDIA_ROOT, submission.file2.name)
-        comparison = comparator.compare(preprocessor.normalize(filepath1), preprocessor.normalize(filepath2))
+        filepath_1 = os.path.join(settings.MEDIA_ROOT, submission.file.name)
+        filepath_2 = os.path.join(settings.MEDIA_ROOT, submission.file2.name)
+        result = comparator.compare(preprocessor.normalize(filepath_1), preprocessor.normalize(filepath_2))
 
-        source1 = highlight(filepath1, comparison[1][0])
-        source2 = highlight(filepath2, comparison[1][1])
-        return render(self.request, 'report.html', {'data': comparison, 'percent': comparison[0], 'file1': source1, 'file2': source2})
+        source1 = highlight(filepath_1, [x[0] for x in result[1]])
+        source2 = highlight(filepath_2, [x[1] for x in result[1]])
+        return render(self.request, 'report.html', {'data': result, 'percent': result[0],
+                                                    'file1': source1, 'file2': source2})
 
-
-        return render(self.request,'report.html',{'data' : comparison})
-
+        return render(self.request, 'report.html', {'data': comparison})
 
 
 class ReportView(View):
@@ -59,15 +57,11 @@ class ReportView(View):
             })
 
 
-
-
 def highlight(filepath, line_numbers):
     with open(filepath, "r") as file:
         source = list(file)
-    print(len(source))
-    print(line_numbers[-1])
-    for i in line_numbers:
-        if not i >= len(source):
-            source[i] = "<span class=\"highlight\">"+source[i]+"</span>"
+
+    for line_number in line_numbers:
+        source[line_number-1] = "<span class=\"highlight\">"+source[line_number-1]+"</span>"
 
     return "".join(source)

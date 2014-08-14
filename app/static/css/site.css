@@ -1,3 +1,20 @@
 .body-content {
     margin-top: 100px;
 }
+
+.highlight {
+    background-color: #ffff00;
+}
+
+.file {
+    text-indent: 0px;
+    white-space: pre
+}
+
+.float-left {
+    float: left;
+}
+
+.float-right {
+    float: right;
+}

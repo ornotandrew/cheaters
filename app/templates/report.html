@@ -2,20 +2,14 @@
 
 {% block content %}
 <div>
-<style>.highlight {background-color: #ffff00;} .file {white-space: pre} .file1 {float: left; } .file2 {float: right}</style>
 
-{{ data }}
+{{ data }} <br />
 
-<br />
 <h1>{{ percent }}% similarity</h1>
-    {% autoescape off %}
-        <div class="file file1">
-        {{ file1 }}
-        </div>
-         <div class="file file2">
-        {{ file2 }}
-        </div>
-    {% endautoescape %}
+{% autoescape off %}
+    <div class="file float-left"> {{ file1 }} </div>
+    <div class="file float-right"> {{ file2 }} </div>
+{% endautoescape %}
 
 
 
