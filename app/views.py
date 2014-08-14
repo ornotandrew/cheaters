@@ -9,7 +9,8 @@ from django.core.urlresolvers import reverse_lazy
 from django.contrib import messages
 from cheaters import settings
 import os
-from app.lib import comparator, preprocessor
+from app.lib import preprocessor
+from app.lib.comparator import Comparator
 # Create your views here.
 
 
@@ -36,6 +37,8 @@ class UploadFileView(FormView):
 
         filepath_1 = os.path.join(settings.MEDIA_ROOT, submission.file.name)
         filepath_2 = os.path.join(settings.MEDIA_ROOT, submission.file2.name)
+
+        comparator = Comparator()
         result = comparator.compare(preprocessor.normalize(filepath_1), preprocessor.normalize(filepath_2))
 
         source1 = highlight(filepath_1, [x[0] for x in result[1]])
@@ -57,8 +60,8 @@ class ReportView(View):
             })
 
 
-def highlight(filepath, line_numbers):
-    with open(filepath, "r") as file:
+def highlight(file_path, line_numbers):
+    with open(file_path, "r") as file:
         source = list(file)
 
     for line_number in line_numbers:
