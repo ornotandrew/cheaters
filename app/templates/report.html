@@ -5,6 +5,7 @@
 <style>.highlight {background-color: #ffff00;} .file {white-space: pre} .file1 {float: left; } .file2 {float: right}</style>
 
 {{ data }}
+
 <br />
 <h1>{{ percent }}% similarity</h1>
     {% autoescape off %}
@@ -15,6 +16,9 @@
         {{ file2 }}
         </div>
     {% endautoescape %}
+
+
+
 </div>
 
 {% endblock %}

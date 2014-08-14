@@ -40,10 +40,15 @@ class UploadFileView(FormView):
         filepath2 = os.path.join(settings.MEDIA_ROOT, self.request.FILES['file2'].name)
 
         comparison = comparator.compare(preprocessor.normalize(filepath1), preprocessor.normalize(filepath2))
+
         print(comparison)
         source1 = highlight(filepath1, comparison[1][0])
         source2 = highlight(filepath2, comparison[1][1])
         return render(self.request, 'report.html', {'data': comparison, 'percent': comparison[0], 'file1': source1, 'file2': source2})
+
+
+        return render(self.request,'report.html',{'data' : comparison})
+
 
 
 class ReportView(View):
@@ -55,6 +60,7 @@ class ReportView(View):
                 'title': 'Report Page',
                 'year': datetime.now().year
             })
+
 
 
 
