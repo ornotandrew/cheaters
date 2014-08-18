@@ -2,38 +2,45 @@ from io import StringIO
 import tokenize
 
 
-def preprocess(source):
-    """
-    :return: The 'source' without whitespace, comments, docstrings or blank lines.
-    """  
-    io_obj = StringIO(source)
-    out = ""
+class Preprocessor():
 
-    for tok in tokenize.generate_tokens(io_obj.readline):
-        token_type = tok[0]
-        token_string = tok[1]
+    def __init__(self, filename):
+        file = open(filename, "r")
+        self.original_source = file.read()
+        file.close()
+        self.line_map = self.create_line_map(self.original_source)
+        self.processed_source = self.normalize(self.original_source)
 
-        # comments:
-        if token_type == tokenize.COMMENT:
-            pass
-        # docstrings:
-        elif token_type == tokenize.STRING:
-            if token_string[0:3] == r'"""' and token_string[-3:] == r'"""':
-                out += "\n"*token_string.count("\n")
-            else:
-                out += token_string
-        # whitespace
-        else:
-            out += token_string.replace(" ", "")
+    def create_line_map(self, source):
+        """
+        Generates a map which will tell you what line you are on, given your index in file contents
+        Your index is the number of your current character, not counting any newlines
+        :param source: The original source code, as a string
+        :return: The generated map
+        """
 
-    return out
+        line_map = []
+        if source[0] != "\n":
+            line_map.append(1)
+        current_line = 1
+
+        for i in range(1, len(source)):
+            if source[i-1] == "\n":
+                current_line += 1
+            if source[i] != "\n" and source[i] != " ":
+                line_map.append(current_line)
+        return line_map
 
 
-def normalize(filename):
-    c = open(filename, "r")
-    source_c = c.read()
-    c.close()
-    out = preprocess(source_c)
-    return out
-    
+    def normalize(self, source):
+        """
+        :return: The 'source' without whitespace or blank lines.
+        """
+        io_obj = StringIO(source)
+        out = ""
 
+        for tok in tokenize.generate_tokens(io_obj.readline):
+            # token_type = tok[0]
+            token_string = tok[1]
+            out += token_string.replace(" ", "").replace("\n", "")
+        return out
