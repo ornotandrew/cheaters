@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpRequest
 from django.template import RequestContext
 from datetime import datetime
+from app.SubmissionController import SubmissionController
 from app.forms import UploadFileForm
 from django.views.generic import View
 from django.views.generic.edit import FormView
@@ -9,8 +10,6 @@ from django.core.urlresolvers import reverse_lazy
 from django.contrib import messages
 from cheaters import settings
 import os
-from app.lib import preprocessor
-from app.lib.comparator import Comparator
 # Create your views here.
 
 
@@ -38,8 +37,8 @@ class UploadFileView(FormView):
         filepath_1 = os.path.join(settings.MEDIA_ROOT, submission.file.name)
         filepath_2 = os.path.join(settings.MEDIA_ROOT, submission.file2.name)
 
-        comparator = Comparator(filepath_1, filepath_2)
-        result = comparator.compare()
+        sub_controller = SubmissionController(filepath_1, filepath_2)
+        result = sub_controller.result
 
         source1 = highlight(filepath_1, [x[0] for x in result[1]])
         source2 = highlight(filepath_2, [x[1] for x in result[1]])
