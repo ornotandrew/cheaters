@@ -6,7 +6,7 @@ Brendan Ball
 Cheaters is a plagiarism detection system built with python on top of the Django framework to provide access through a web service.
 
 Instructions:
-Id db.sqlite3 doesn't exist run python manage.py syndb before running the server
+Id db.sqlite3 doesn't exist run python manage.py syncdb before running the server
 If changes to model was made then delete db.sqlite3 then run python manage.py syndb before running the server
 
 to run the server:

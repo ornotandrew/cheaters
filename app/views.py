@@ -3,6 +3,7 @@ from django.http import HttpRequest
 from django.template import RequestContext
 from datetime import datetime
 from app.SubmissionController import SubmissionController
+from app.lib.UploadFileHandler import FileHandler
 from app.forms import UploadFileForm
 from django.views.generic import View
 from django.views.generic.edit import FormView
@@ -32,20 +33,21 @@ class UploadFileView(FormView):
     success_url = reverse_lazy('report')
 
     def form_valid(self, form):
-        submission = form.save(commit=True)
+        #submission = form.save(commit=True)
+        filehandler = FileHandler(form.cleaned_data['file'])
+        submissions = filehandler.submissions
 
-        filepath_1 = os.path.join(settings.MEDIA_ROOT, submission.file.name)
-        filepath_2 = os.path.join(settings.MEDIA_ROOT, submission.file2.name)
+        sub_controller = SubmissionController(submissions)
+        #result = sub_controller.result
 
-        sub_controller = SubmissionController(filepath_1, filepath_2)
-        result = sub_controller.result
+        #source1 = highlight(filepath_1, [x[0] for x in result[1]])
+        #source2 = highlight(filepath_2, [x[1] for x in result[1]])
+        #return render(self.request, 'report.html', {'data': result, 'percent': result[0],
+         #                                           'file1': source1, 'file2': source2})
+        return render(self.request, 'report.html',)
 
-        source1 = highlight(filepath_1, [x[0] for x in result[1]])
-        source2 = highlight(filepath_2, [x[1] for x in result[1]])
-        return render(self.request, 'report.html', {'data': result, 'percent': result[0],
-                                                    'file1': source1, 'file2': source2})
 
-        return render(self.request, 'report.html', {'data': comparison})
+
 
 
 class ReportView(View):
