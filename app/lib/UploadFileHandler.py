@@ -28,8 +28,9 @@ class FileHandler():
                     submission = Submission()
                     submission.submission_id = self.submission_id
                     submission.user_id = os.path.dirname(file_name)
+                    submission.file_name = os.path.basename(file_name)
                     file = zip.open(file_name)
-                    submission.file = file.read().decode('utf-8', "ignore")
+                    submission.file_contents = file.read().decode('utf-8', "ignore")
 
                     submission.save()
                     self.submissions.append(submission)

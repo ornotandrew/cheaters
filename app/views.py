@@ -3,7 +3,7 @@ from django.http import HttpRequest
 from django.template import RequestContext
 from datetime import datetime
 from app.SubmissionController import SubmissionController
-from app.lib.UploadFileHandler import FileHandler
+
 from app.forms import UploadFileForm
 from django.views.generic import View
 from django.views.generic.edit import FormView
@@ -34,10 +34,9 @@ class UploadFileView(FormView):
 
     def form_valid(self, form):
         #submission = form.save(commit=True)
-        filehandler = FileHandler(form.cleaned_data['file'])
-        submissions = filehandler.submissions
 
-        sub_controller = SubmissionController(submissions)
+
+        sub_controller = SubmissionController(form.cleaned_data['file'])
         #result = sub_controller.result
 
         #source1 = highlight(filepath_1, [x[0] for x in result[1]])
