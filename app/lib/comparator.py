@@ -1,44 +1,58 @@
 from itertools import groupby
 from operator import itemgetter
-from app.lib.fingerprinter import Fingerprinter
-from app.lib.preprocessor import Preprocessor
 
 
 class Comparator:
 
-    def __init__(self, filename_a, filename_b):
+    def __init__(self, submission_list):
         """
         The process is as follows:
             get fingerprints -> compare
-        :param fingerprint_list: A list containing elements of type {file_descriptor, fingerprint}
+        :param submission_list: A list containing elements of type Submission(Model)
         """
         self.min_lines_matched = 3
 
-        preprocessor_a = Preprocessor(filename_a)
-        preprocessor_b = Preprocessor(filename_b)
-        print_a = Fingerprinter(preprocessor_a)
-        print_b = Fingerprinter(preprocessor_b)
+        # this report object should contain dictionaries of the form
+        # {filename_1, filename_2, percent_match, line_matches}
+        self.report = []
 
-        self.result = self.compare_fingerprints(print_a.fingerprint, print_b.fingerprint)
+        num_submissions = len(submission_list)
 
-        # make result[0] a percentage of total lines, since we have the sources up here
-        # we don't want to count blank lines, because we are not matching on blank lines
-        # TODO: make this non-retarded and put it in the preprocessor
-        num_lines_a = len([x for x in preprocessor_a.original_source.split("\n") if x != ""])
-        num_lines_b = len([x for x in preprocessor_b.original_source.split("\n") if x != ""])
-        self.result[0] = int(self.result[0]/min(num_lines_a, num_lines_b)*100)
+        for i in range(num_submissions):
+            # compare to everything to the right
+            for j in range(1, num_submissions-i-1):
+                submission_1 = submission_list[i]
+                submission_2 = submission_list[i+j]
+                result = {"filename_1": submission_1.filename, "filename_2": submission_2.filename}
+                result["line_matches"] = self.compare_fingerprints(submission_1.fingerprint, submission_2.fingerprint)
+                result["percent_match"] = self.calculate_percent_match(result["line_matches"],
+                                                                       submission_1, submission_2)
+                self.report.append(result)
+            #TODO: Compare to historical data
 
-    def compare_fingerprints(self, f_a, f_b):
+    def calculate_percent_match(self, line_matches, submission_1, submission_2):
         """
-        :param f_a: Fingerprint A, containing it's hash and line numbers
-        :param f_b: Fingerprint B, containing it's hash and line numbers
-        :return: A list of the form [number of matching lines, [(line in A, line in B),...]]
+        :param line_matches: A list of tuples, containing matching lines
+        :return: A percentage of the number of lines matched in the smaller file.
+        This does not include blank lines, because we don't match on blank lines and want to me consistent
+        """
+        num_matches = len(line_matches)
+        num_lines_1 = len([x for x in submission_1.file_contents.split("\n") if x != ""])
+        num_lines_2 = len([x for x in submission_2.file_contents.split("\n") if x != ""])
+
+        return int(num_matches/min(num_lines_1, num_lines_2)*100)
+
+    def compare_fingerprints(self, f_1, f_2):
+        """
+        :param f_1: Fingerprint A, containing it's hash and line numbers
+        :param f_2: Fingerprint B, containing it's hash and line numbers
+        :return: A list of the form [(line in A, line in B),...]
         """
 
         result = [0, []]
 
-        dict_f_a = dict(f_a)
-        dict_f_b = dict(f_b)
+        dict_f_a = dict(f_1)
+        dict_f_b = dict(f_2)
         # we can now get a list of strings of hashes which match
         hash_matches = set(dict_f_a.keys()) & set(dict_f_b.keys())
 
@@ -64,6 +78,4 @@ class Comparator:
         final_matches_b = [x[1] for x in all_matches if x[0] in final_matches_a]
         result[1] = [x for x in all_matches if x[0] in final_matches_a or x[1] in final_matches_b]
 
-        result[0] = len(result[1])
-        print(result)
         return result

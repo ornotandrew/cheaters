@@ -37,7 +37,7 @@ class UploadFileView(FormView):
 
 
         sub_controller = SubmissionController(form.cleaned_data['file'])
-        #result = sub_controller.result
+        #report = sub_controller.report
 
         #source1 = highlight(filepath_1, [x[0] for x in result[1]])
         #source2 = highlight(filepath_2, [x[1] for x in result[1]])

@@ -1,15 +1,8 @@
-from io import StringIO
-import tokenize
-
-
 class Preprocessor():
-
-    def __init__(self, filename):
-        file = open(filename, "r")
-        self.original_source = file.read()
-        file.close()
-        self.line_map = self.create_line_map(self.original_source)
-        self.processed_source = self.normalize(self.original_source)
+    # TODO: THIS SHOULD NOT BE A CLASS
+    def __init__(self, source):
+        self.line_map = self.create_line_map(source)
+        self.processed_source = self.normalize(source)
 
     def create_line_map(self, source):
         """
@@ -33,14 +26,4 @@ class Preprocessor():
 
 
     def normalize(self, source):
-        """
-        :return: The 'source' without whitespace or blank lines.
-        """
-        io_obj = StringIO(source)
-        out = ""
-
-        for tok in tokenize.generate_tokens(io_obj.readline):
-            # token_type = tok[0]
-            token_string = tok[1]
-            out += token_string.replace(" ", "").replace("\n", "")
-        return out
+        return source.replace(" ", "").replace("\n", "")

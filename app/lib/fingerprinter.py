@@ -1,3 +1,6 @@
+from app.lib.preprocessor import Preprocessor
+
+
 class Fingerprinter:
     """
     This class provides methods for comparing source files. It is a python implementation of hashing and "winnowing"
@@ -11,7 +14,7 @@ class Fingerprinter:
     This guarantees point (1) above
     """
 
-    def __init__(self, preprocessor):
+    def __init__(self, source):
         """
         The process here is as follows:
             normalize -> generate ngrams -> hash ngrams -> winnow
@@ -20,7 +23,8 @@ class Fingerprinter:
         t = 15
         w = t - n + 1
 
-        ngrams = self.get_ngrams(preprocessor.processed_source, preprocessor.line_map, n)
+        pre = Preprocessor(source)
+        ngrams = self.get_ngrams(pre.processed_source, pre.line_map, n)
         hashes = self.get_hash_values(ngrams)
         self.fingerprint = self.winnow(hashes, w)
 
