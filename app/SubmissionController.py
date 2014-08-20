@@ -13,6 +13,7 @@ class SubmissionController:
         for submission in submission_list:
             fingerprinter = Fingerprinter(submission.file_contents)
             submission.fingerprint = fingerprinter.fingerprint
+            submission.save()
 
         comparator = Comparator(submission_list)
         self.report = comparator.report
