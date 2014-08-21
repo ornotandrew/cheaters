@@ -1,6 +1,6 @@
-from app.lib.comparator import Comparator
-from app.lib.UploadFileHandler import FileHandler
-from app.lib.fingerprinter import Fingerprinter
+from lib.comparator import Comparator
+from lib.UploadFileHandler import FileHandler
+from lib.fingerprinter import Fingerprinter
 
 
 class SubmissionController:

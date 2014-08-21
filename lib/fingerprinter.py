@@ -1,4 +1,4 @@
-from app.lib.preprocessor import Preprocessor
+from lib.preprocessor import Preprocessor
 
 
 class Fingerprinter:
