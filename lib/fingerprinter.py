@@ -51,12 +51,14 @@ class Fingerprinter:
         :return: the original ngram_pairs, but now of the form [hash, [lines the ngram appears on]]
         """
 
+        base_seed = 10
+
         # run the first hash normally
         first_hash_in_prev_window = 0
         current_ngram = ngram_list[0][0]
         hash_value = 0
         for i in range(len(current_ngram)):
-            hash_value += ord(current_ngram[i])*10**(len(current_ngram)-i-1)
+            hash_value += ord(current_ngram[i])*base_seed**(len(current_ngram)-i-1)
             if i == 0:
                 first_hash_in_prev_window = hash_value
         ngram_list[0][0] = hash_value
@@ -64,9 +66,9 @@ class Fingerprinter:
         # then use the rolling function
         for hash_index in range(1, len(ngram_list)):
             current_ngram = ngram_list[hash_index][0]
-            temp = ord(current_ngram[0])*10**(len(current_ngram)-1)
+            temp = ord(current_ngram[0])*base_seed**(len(current_ngram)-1)
             prev_hash = ngram_list[hash_index-1][0]
-            ngram_list[hash_index][0] = (prev_hash - first_hash_in_prev_window)*10 + ord(ngram_list[hash_index][0][-1])
+            ngram_list[hash_index][0] = (prev_hash - first_hash_in_prev_window)*base_seed + ord(ngram_list[hash_index][0][-1])
             first_hash_in_prev_window = temp
 
         return ngram_list

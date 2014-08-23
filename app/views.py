@@ -37,7 +37,7 @@ class UploadFileView(FormView):
         report = sub_controller.report
 
         return render(self.request, 'report.html', {'data': "",
-                                                    'percent': report[0]["percent_match"],
+                                                    'percent': report.match_list[0]["percent_match"],
                                                     })
 
 

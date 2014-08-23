@@ -23,14 +23,14 @@ class Comparator:
             for j in range(1, num_submissions-i):
                 submission_1 = submission_list[i]
                 submission_2 = submission_list[i+j]
-                result = {"filename_1": submission_1.filename, "filename_2": submission_2.filename}
+                result = {"file_1": submission_1.id, "file_2": submission_2.id}
                 result["line_matches"] = self.compare_fingerprints(submission_1.fingerprint, submission_2.fingerprint)
-                result["percent_match"] = self.calculate_percent_match(result["line_matches"],
-                                                                       submission_1, submission_2)
+                result["percent_match"] = self.calculate_percent_match(result["line_matches"], submission_1, submission_2)
                 self.report.append(result)
-            #TODO: Compare to historical data
+            # TODO: Compare to historical data
 
-    def calculate_percent_match(self, line_matches, submission_1, submission_2):
+    @staticmethod
+    def calculate_percent_match(line_matches, submission_1, submission_2):
         """
         :param line_matches: A list of tuples, containing matching lines
         :return: A percentage of the number of lines matched in the smaller file.
@@ -44,27 +44,28 @@ class Comparator:
 
     def compare_fingerprints(self, f_1, f_2):
         """
-        :param f_1: Fingerprint A, containing it's hash and line numbers
-        :param f_2: Fingerprint B, containing it's hash and line numbers
+        :param f_1: Fingerprint A, containing a list containing elements -> [hash, [line_numbers]]
+        :param f_2: see Fingerprint A
         :return: A list of the form [(line in A, line in B),...]
         """
 
         result = []
 
-        dict_f_a = dict(f_1)
-        dict_f_b = dict(f_2)
-        # we can now get a list of strings of hashes which match
-        hash_matches = set(dict_f_a.keys()) & set(dict_f_b.keys())
+        # dict_f_1 = self.make_dict(f_1)
+        # dict_f_2 = self.make_dict(f_2)
+        dict_f_1 = dict(f_1)
+        dict_f_2 = dict(f_2)
 
-        hash_map = {}
+        # we can now get a list of strings of hashes which match
+        hash_matches = set(dict_f_1.keys()) & set(dict_f_2.keys())
+
+        # and construct a list of unique tuples of matching lines -> [(line in a, line in b), ..]
+        all_matches = []
         for match in hash_matches:
-            line_list_a = dict_f_a[match]
-            line_list_b = dict_f_b[match]
-            for i in range(len(line_list_a)):
-                hash_map[str(1000*line_list_a[i]+line_list_b[i])] = (line_list_a[i], line_list_b[i])
+            all_matches += zip(dict_f_1[match], dict_f_2[match])
+        all_matches = sorted(list(set(all_matches)))
 
         # we now want to only show cases where there are a few lines matched consecutively
-        all_matches = sorted(list(hash_map.values()))
         matches_a = [x[0] for x in all_matches]
         final_matches_a = []
         # the following 2 lines were tearfully whispered by a great wizard
@@ -78,4 +79,20 @@ class Comparator:
         final_matches_b = [x[1] for x in all_matches if x[0] in final_matches_a]
         result = [x for x in all_matches if x[0] in final_matches_a or x[1] in final_matches_b]
 
+        return result
+
+    @staticmethod
+    def make_dict(arg):
+        """
+        Does exactly what dict(arg) would do, but adds to existing entries rather than overwriting them
+        :param arg: Anything of the form [key, value]
+        :return: A dictionary, with the values for one key joined together as a list
+        """
+        result = {}
+        for elem in arg:
+            if not elem[0] in result.keys():
+                result[elem[0]] = elem[1]
+            else:
+                print("{0}:{1} exists. adding {2}".format(elem[0], result[elem[0]], elem[1]))
+                result[elem[0]] += elem[1]
         return result

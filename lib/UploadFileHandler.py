@@ -15,7 +15,6 @@ class FileHandler():
         self.submissions = []
         if zipfile.is_zipfile(file):
             self.process_zipfile(file)
-        print("Extracted: {0}".format([x.filename for x in self.submissions]))
 
     def process_zipfile(self, zfile):
 
