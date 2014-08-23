@@ -11,7 +11,7 @@ class Submission(models.Model):
     filename = models.TextField()
     file_contents = models.TextField()
     fingerprint = models.TextField(null=True)
-    date = models.DateTimeField('date submitted',auto_now_add=True)
+    date = models.DateTimeField('date submitted', auto_now_add=True)
 
 
 class Report (models.Model):

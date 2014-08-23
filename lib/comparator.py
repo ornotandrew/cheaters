@@ -20,7 +20,7 @@ class Comparator:
 
         for i in range(num_submissions):
             # compare to everything to the right
-            for j in range(1, num_submissions-i-1):
+            for j in range(1, num_submissions-i):
                 submission_1 = submission_list[i]
                 submission_2 = submission_list[i+j]
                 result = {"filename_1": submission_1.filename, "filename_2": submission_2.filename}
@@ -49,7 +49,7 @@ class Comparator:
         :return: A list of the form [(line in A, line in B),...]
         """
 
-        result = [0, []]
+        result = []
 
         dict_f_a = dict(f_1)
         dict_f_b = dict(f_2)
@@ -76,6 +76,6 @@ class Comparator:
                 final_matches_a += match_range
         # TODO: there's probably a clever way to do this...
         final_matches_b = [x[1] for x in all_matches if x[0] in final_matches_a]
-        result[1] = [x for x in all_matches if x[0] in final_matches_a or x[1] in final_matches_b]
+        result = [x for x in all_matches if x[0] in final_matches_a or x[1] in final_matches_b]
 
         return result

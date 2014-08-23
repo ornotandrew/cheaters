@@ -15,9 +15,9 @@ class SubmissionController:
             fingerprinter = Fingerprinter(submission.file_contents)
             submission.fingerprint = fingerprinter.fingerprint
 
-        print("done generating fingerprints")
+        print("Generated fingerprints")
         Submission.objects.bulk_create(submission_list)
-        print("done saving submissions to db")
+        print("Saved submissions to db")
         comparator = Comparator(submission_list)
         self.report = comparator.report
-        print("done comparing")
+        print("Got report from comparator: {0}".format(self.report))

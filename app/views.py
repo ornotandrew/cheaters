@@ -33,17 +33,12 @@ class UploadFileView(FormView):
     success_url = reverse_lazy('report')
 
     def form_valid(self, form):
-        #submission = form.save(commit=True)
-
-
         sub_controller = SubmissionController(form.cleaned_data['file'])
-        #report = sub_controller.report
+        report = sub_controller.report
 
-        #source1 = highlight(filepath_1, [x[0] for x in result[1]])
-        #source2 = highlight(filepath_2, [x[1] for x in result[1]])
-        #return render(self.request, 'report.html', {'data': result, 'percent': result[0],
-         #                                           'file1': source1, 'file2': source2})
-        return render(self.request, 'report.html',)
+        return render(self.request, 'report.html', {'data': "",
+                                                    'percent': report[0]["percent_match"],
+                                                    })
 
 
 
