@@ -14,3 +14,8 @@ class Submission(models.Model):
     date = models.DateTimeField('date submitted',auto_now_add=True)
 
 
+class Report (models.Model):
+    id = models.AutoField(primary_key=True)
+    submission_id = models.ForeignKey("Submission")
+    matched_lines = models.TextField()
+    date = models.DateTimeField('date submitted',auto_now_add=True)
