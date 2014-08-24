@@ -3,9 +3,8 @@
 {% block content %}
 <div>
 
-{{ data }} <br />
 
-<h1>{{ percent }}% similarity</h1>
+<h1>{{ percent_match }}% similarity</h1>
 {% autoescape off %}
     <div class="file float-left"> {{ file1 }} </div>
     <div class="file float-right"> {{ file2 }} </div>
