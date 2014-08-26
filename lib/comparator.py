@@ -1,4 +1,4 @@
-from itertools import groupby
+from itertools import groupby, combinations
 from operator import itemgetter
 
 
@@ -16,30 +16,26 @@ class Comparator:
         # {filename_1, filename_2, percent_match, line_matches}
         self.report = []
 
-        num_submissions = len(submission_list)
-
-        for i in range(num_submissions):
-            # compare to everything to the right
-            for j in range(1, num_submissions-i):
-                submission_1 = submission_list[i]
-                submission_2 = submission_list[i+j]
-                result = {"file_1": submission_1.id, "file_2": submission_2.id}
-                result["line_matches"] = self.compare_fingerprints(submission_1.fingerprint, submission_2.fingerprint)
-                result["percent_match"] = self.calculate_percent_match(result["line_matches"], submission_1, submission_2)
-                if result["percent_match"] > self.match_threshold:
-                    self.report.append(result)
+        for sub_1, sub_2 in combinations(submission_list, 2):
+            result = {"file_1": sub_1.id, "file_2": sub_2.id}
+            result["line_matches"] = self.compare_fingerprints(sub_1.fingerprint, sub_2.fingerprint)
+            result["percent_match"] = self.calculate_percent_match(result["line_matches"], sub_1, sub_2)
+            if result["percent_match"] > self.match_threshold:
+                self.report.append(result)
             # TODO: Compare to historical data
 
+
+
     @staticmethod
-    def calculate_percent_match(line_matches, submission_1, submission_2):
+    def calculate_percent_match(line_matches, sub_1, sub_2):
         """
         :param line_matches: A list of tuples, containing matching lines
         :return: A percentage of the number of lines matched in the smaller file.
         This does not include blank lines, because we don't match on blank lines and want to me consistent
         """
         num_matches = len(line_matches)
-        num_lines_1 = len([x for x in submission_1.file_contents.split("\n") if x != ""])
-        num_lines_2 = len([x for x in submission_2.file_contents.split("\n") if x != ""])
+        num_lines_1 = len([x for x in sub_1.file_contents.split("\n") if x != ""])
+        num_lines_2 = len([x for x in sub_2.file_contents.split("\n") if x != ""])
 
         return int(num_matches/min(num_lines_1, num_lines_2)*100)
 
@@ -50,8 +46,6 @@ class Comparator:
         :return: A list of the form [(line in A, line in B),...]
         """
 
-        # dict_f_1 = self.make_dict(f_1)
-        # dict_f_2 = self.make_dict(f_2)
         dict_f_1 = dict(f_1)
         dict_f_2 = dict(f_2)
 
@@ -78,20 +72,4 @@ class Comparator:
         final_matches_b = [x[1] for x in all_matches if x[0] in final_matches_a]
         result = [x for x in all_matches if x[0] in final_matches_a or x[1] in final_matches_b]
 
-        return result
-
-    @staticmethod
-    def make_dict(arg):
-        """
-        Does exactly what dict(arg) would do, but adds to existing entries rather than overwriting them
-        :param arg: Anything of the form [key, value]
-        :return: A dictionary, with the values for one key joined together as a list
-        """
-        result = {}
-        for elem in arg:
-            if not elem[0] in result.keys():
-                result[elem[0]] = elem[1]
-            else:
-                print("{0}:{1} exists. adding {2}".format(elem[0], result[elem[0]], elem[1]))
-                result[elem[0]] += elem[1]
         return result

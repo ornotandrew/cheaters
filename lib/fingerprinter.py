@@ -42,6 +42,10 @@ class Fingerprinter:
             line_range = list(set([x for x in line_range_raw if line_range_raw.count(x) > 1]))
             ngrams.append([source[i:i+n], line_range])
 
+        # there may be a case where the whole file has less than n characters
+        if len(ngrams) == 0:
+            return [[source, [1]]]
+
         return ngrams
 
     @staticmethod

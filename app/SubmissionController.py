@@ -10,6 +10,7 @@ class SubmissionController:
     def __init__(self, file):
         print("{0:<35}{1}".format("Process", "Time (s)"))
         print("--------------------------------------------")
+        t_total = time()
 
         # unzip the file and create the submission objects
         t = time()
@@ -52,3 +53,5 @@ class SubmissionController:
         self.report.save()
         t = time()-t
         print("{0:<35}{1:.5f}".format("Saved report with ID "+str(self.report.id), t))
+        t_total = time()-t_total
+        print("{0:<35}{1:.5f}".format("TOTAL", t_total))

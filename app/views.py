@@ -89,7 +89,6 @@ class ReportView(View):
 def highlight(file, line_numbers):
 
     source = file.splitlines()
-    print(source)
     for line_number in line_numbers:
         source[line_number-1] = "<span class=\"highlight\">"+source[line_number-1]+"</span>"
 
