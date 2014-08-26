@@ -20,17 +20,24 @@ class SubmissionController:
 
         # save the submissions for later use
         # TODO: some kind of bulk add?
-        for sub in submission_list:
-            sub.save()
-        submission_id = submission_list[0].submission_id
-        print(" ~ Saved submissions with ID {0}".format(submission_id))
+
+        self.submission_id = submission_list[0].submission_id
+        # save all submissions in a single query
+        Submission.objects.bulk_create(submission_list)
+        # retrieve same submissions now that the db has given them all primary keys
+        submission_list = Submission.objects.filter(submission_id = self.submission_id)
+        # eval all the fingerprints from string to list
+        for submission in submission_list:
+            submission.fingerprint = eval(submission.fingerprint)
+
+        print(" ~ Saved submissions with ID {0}".format(self.submission_id))
 
         # do the comparison and get the report
         comparator = Comparator(submission_list)
 
         # create the report object and save it
         self.report = Report()
-        self.report.submission_id = submission_id
+        self.report.submission_id = self.submission_id
         self.report.match_list = comparator.report
         self.report.save()
         print(" ~ Saved report with ID {0}".format(self.report.id))
