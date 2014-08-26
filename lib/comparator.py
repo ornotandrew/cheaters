@@ -3,7 +3,6 @@ from operator import itemgetter
 
 
 class Comparator:
-
     def __init__(self, submission_list):
         """
         The process is as follows:
@@ -11,6 +10,7 @@ class Comparator:
         :param submission_list: A list containing elements of type Submission(Model)
         """
         self.min_lines_matched = 3
+        self.match_threshold = 33
 
         # this report object should contain dictionaries of the form
         # {filename_1, filename_2, percent_match, line_matches}
@@ -26,7 +26,8 @@ class Comparator:
                 result = {"file_1": submission_1.id, "file_2": submission_2.id}
                 result["line_matches"] = self.compare_fingerprints(submission_1.fingerprint, submission_2.fingerprint)
                 result["percent_match"] = self.calculate_percent_match(result["line_matches"], submission_1, submission_2)
-                self.report.append(result)
+                if result["percent_match"] > self.match_threshold:
+                    self.report.append(result)
             # TODO: Compare to historical data
 
     @staticmethod
@@ -48,8 +49,6 @@ class Comparator:
         :param f_2: see Fingerprint A
         :return: A list of the form [(line in A, line in B),...]
         """
-
-        result = []
 
         # dict_f_1 = self.make_dict(f_1)
         # dict_f_2 = self.make_dict(f_2)
