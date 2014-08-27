@@ -1,3 +1,4 @@
+import cProfile
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponseRedirect
 
@@ -21,7 +22,6 @@ class IndexView(View):
             'index.html',
             {
                 'title': 'Home Page',
-                'year': datetime.now().year,
                 'form': UploadFileForm()
             })
 
@@ -35,6 +35,7 @@ class UploadFileView(FormView):
 
     def form_valid(self, form):
         sub_controller = SubmissionController(form.cleaned_data['file'])
+        #cProfile.runctx("SubmissionController(form.cleaned_data['file'])", locals(), globals(), "temp/profile.prof")
         self.report = sub_controller.report
 
         return HttpResponseRedirect(self.get_success_url())
@@ -43,7 +44,7 @@ class UploadFileView(FormView):
         return reverse("report_file_list", kwargs={"report_id": self.report.id})
 
 
-class ReportFileListView(View):
+class ReportView(View):
     """
     gives a list of the comparisons in the report
     """
@@ -51,10 +52,12 @@ class ReportFileListView(View):
         report = Report.objects.get(id=report_id)
         report.match_list = eval(report.match_list)
 
-        return render(request,"report_file_list.html", {"title": "Report File List","report_id": report_id, "object_list": report.match_list})
+        return render(request, "report.html", {"title": "Report File List",
+                                                         "report_id": report_id,
+                                                         "object_list": report.match_list})
 
 
-class ReportView(View):
+class ComparisonView(View):
     """
     shows the comparison between 2 given files.
     """
@@ -76,7 +79,7 @@ class ReportView(View):
 
         return render(
             request,
-            "report.html",
+            "comparison.html",
             {
                 "title": "Report Page",
                 "year": datetime.now().year,

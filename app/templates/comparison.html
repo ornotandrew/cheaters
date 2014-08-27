@@ -1,0 +1,17 @@
+{% extends "Layout.html" %}
+
+{% block content %}
+<div>
+
+
+<div class="heading">{{ percent_match }}% similarity</div>
+{% autoescape off %}
+    <div class="filebox float-left"> {{ file1 }} </div>
+    <div class="filebox float-right"> {{ file2 }} </div>
+{% endautoescape %}
+
+
+
+</div>
+
+{% endblock %}

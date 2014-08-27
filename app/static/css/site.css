@@ -1,14 +1,30 @@
 .body-content {
-    margin-top: 100px;
+    margin-top: 20px;
+}
+
+.file-list-container {
+    margin: 0 auto;
+}
+
+.heading {
+    font-size: 30px;
+    text-align: center;
+    margin-bottom: 15px;
 }
 
 .highlight {
-    background-color: #ffff00;
+    color: rgba(255,0,0,0.7);
 }
 
-.file {
+.filebox {
+    width: 45%;
+    height: 100%;
+    padding: 10px;
+    overflow: auto;
     text-indent: 0px;
-    white-space: pre
+    white-space: pre;
+    box-shadow: inset 0px 0px 10px #000;
+    background-color: rgb(29,33,38);
 }
 
 .float-left {
