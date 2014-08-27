@@ -1,61 +1,101 @@
-import temp.ply.ply.lex as lex
+import ply.ply.lex as lex
 
 
 class PythonLexer:
+    
+    processedoutput = ""
+    
+    # List of keywords.
+    keywords = {
+        'False' : 'False',
+        'None' : 'None',
+        'True' : 'True',
+        'and' : 'and',
+        'as' : 'as',
+        'assert' : 'assert',
+        'break' : 'break',
+        'class' : 'class',
+        'continue' : 'continue',
+        'def' : 'def',
+        'del' : 'del',
+        'elif' :'elif',
+        'else' : 'else',
+        'except' : 'except',
+        'finally' : 'finally',
+        'for' : 'for',
+        'from' : 'from',
+        'global' : 'global',
+        'if' : 'if',
+        'import' : 'import',
+        'in' : 'in',
+        'is' : 'is',
+        'lambda' : 'lambda',
+        'nonlocal' : 'nonlocal',
+        'not' : 'not',
+        'or' : 'or',
+        'pass' : 'pass',
+        'raise' : 'raise',
+        'return' : 'return',
+        'try' : 'try',
+        'while' : 'while',
+        'with' : 'with',
+        'yield' : 'yield'   
+        }
+    
     # List of token names.
-    tokens = (
-       'NUMBER',
-       'PLUS',
-       'MINUS',
-       'TIMES',
-       'DIVIDE',
-       'LPAREN',
-       'RPAREN',
-    )
-
-    # Regular expression rules for simple tokens.
-    t_PLUS    = r'\+'
-    t_MINUS   = r'-'
-    t_TIMES   = r'\*'
-    t_DIVIDE  = r'/'
-    t_LPAREN  = r'\('
-    t_RPAREN  = r'\)'
-
-    # A regular expression rule with some action code.
-    def t_NUMBER(self, t):
-        r'\d+'
-        t.value = int(t.value)    
+    tokens = ['V', 'COMMENT', 'STRING'] + list(keywords.values())
+    
+    # A regular expression rule for identifiers.
+    def t_V(self,t):
+        r'[a-zA-Z_][a-zA-Z_0-9]*'
+        # Check for keywords.
+        t.type = self.keywords.get(t.value, 'V')
         return t
-
-    # Define a rule so we can track line numbers.
-    def t_newline(self, t):
-        r'\n+'
-        t.lexer.lineno += len(t.value)
-
-    # A string containing ignored characters (spaces and tabs).
-    t_ignore  = ' \t'
-
-    # Error handling rule.
-    def t_error(self, t):
-        print("Illegal character '%s'" % t.value[0])
+        
+    # A regular expression rule for comments.
+    def t_COMMENT(self,t):
+        r'\#.*'
+        self.processedoutput += t.value
+        pass
+    
+    # A regular expression rule for strings.
+    def t_STRING(self,t):
+        r'\".*'
+        self.processedoutput += t.value
+        pass
+            
+    # Rule to handle characters that are not defined as tokens.
+    def t_error(self,t):
+        self.processedoutput += t.value[0]
         t.lexer.skip(1)
-
+        
     # Build the lexer.
-    def __init__(self, **kwargs):
+    def build(self,**kwargs):
         self.lexer = lex.lex(module=self, **kwargs)
     
     # Test the lexer output.
-    def test(self, data):
-        out = ""
-        self.lexer.input(data)
+    def test(self,data):         
+        self.lexer.input(data)     
         while True:
             tok = self.lexer.token()
-            if not tok:
-                break
-            out += "<" + tok.type + ">"
-        return out
+            if not tok: break
+            self.processedoutput += tok.type
+        return self.processedoutput
+
+# Read a Python source file.
+file = open("a.py", "r")
+rawsourcecode = file.read()
+file.close()
             
-# Build the lexer and try it out.
+# Create a PythonLexer object.
 m = PythonLexer()
-# Test it.
-print(m.test("3 + 4"))
+# Build the PythonLexer object.
+m.build()    
+
+# Test the PythonLexer object.
+processedsourcecode = m.test(rawsourcecode)
+print(processedsourcecode)
+
+
+    
+    
