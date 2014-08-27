@@ -1,3 +1,4 @@
+from collections import deque
 from lib.preprocessor import Preprocessor
 
 
@@ -24,19 +25,19 @@ class Fingerprinter:
         w = t - n + 1
 
         pre = Preprocessor(source)
-        ngrams = self.get_ngrams(pre.processed_source, pre.line_map, n)
+        ngrams = self.get_ngram_lines(pre.processed_source, pre.line_map, n)
         hashes = self.get_hash_values(ngrams)
         self.fingerprint = self.winnow(hashes, w)
 
     @staticmethod
-    def get_ngrams(source, line_map, n):
+    def get_ngram_lines(source, line_map, n):
         """
         :param source: One long, continuous (normalized) string
         :param n: The minimum number of consecutive characters to be a match
         :return A list of the containing elements of the form [ngram, [lines the ngram appears on]]
         """
-        ngrams = []
 
+        ngrams = []
         for i in range(len(source)-n+1):
             line_range_raw = line_map[i:i+n]
             line_range = list(set([x for x in line_range_raw if line_range_raw.count(x) > 1]))
@@ -65,7 +66,7 @@ class Fingerprinter:
             hash_value += ord(current_ngram[i])*base_seed**(len(current_ngram)-i-1)
             if i == 0:
                 first_hash_in_prev_window = hash_value
-        ngram_list[0][0] = hash_value
+        ngram_list[0] = [hash_value, ngram_list[0][1]]
 
         # then use the rolling function
         for hash_index in range(1, len(ngram_list)):
@@ -106,6 +107,22 @@ class Fingerprinter:
                 fingerprint.append(min_hash)
 
         return fingerprint
+
+    @staticmethod
+    def ngram_generator(x, n):
+        """
+        A fast way of generating ngrams
+        :param x: Any iterable (string, list)
+        :param n: The number of elements in each gram
+        :return: The next ngram
+        """
+        gram = deque(x[:n], n)
+        yield list(gram)
+        for char in x[n+1:]:
+            gram.append(char)
+            yield list(gram)
+
+
 
 
 
