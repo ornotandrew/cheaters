@@ -1,45 +1,45 @@
 {% extends "Layout.html" %}
 
 {% block content %}
+<div class="heading">Comparisons for report {{ report_id }}</div>
 <div class="file-list-container">
-    <div class="heading">Comparisons for report {{ report_id }}</div>
 
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                  <th>#</th>
-                  <th>File 1</th>
-                  <th>File 2</th>
-                  <th>Match %</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for comparison in object_list %}
-                <tr>
-                  <td>
-                      <a href="{% url 'report' report_id comparison.file_1 comparison.file_2 %}">
-                        {{ forloop.counter0 }}
-                      </a>
-                  </td>
-                  <td>
-                      <a href="{% url 'report' report_id comparison.file_1 comparison.file_2 %}">
-                        {{ comparison.file_1 }}
-                      </a>
-                  </td>
-                  <td>
-                      <a href="{% url 'report' report_id comparison.file_1 comparison.file_2 %}">
-                        {{ comparison.file_2 }}
-                      </a>
-                  </td>
-                  <td>
-                      <a href="{% url 'report' report_id comparison.file_1 comparison.file_2 %}">
-                        {{ comparison.percent_match }}
-                      </a>
-                  </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+              <th>#</th>
+              <th>File 1</th>
+              <th>File 2</th>
+              <th>Match %</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for comparison in object_list %}
+            <tr>
+              <td>
+                  <a href="{% url 'report' report_id comparison.file_1 comparison.file_2 %}">
+                    {{ forloop.counter0 }}
+                  </a>
+              </td>
+              <td>
+                  <a href="{% url 'report' report_id comparison.file_1 comparison.file_2 %}">
+                    {{ comparison.file_1 }}
+                  </a>
+              </td>
+              <td>
+                  <a href="{% url 'report' report_id comparison.file_1 comparison.file_2 %}">
+                    {{ comparison.file_2 }}
+                  </a>
+              </td>
+              <td>
+                  <a href="{% url 'report' report_id comparison.file_1 comparison.file_2 %}">
+                    {{ comparison.percent_match }}
+                  </a>
+              </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
 </div>
 

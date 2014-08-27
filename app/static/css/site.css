@@ -1,9 +1,11 @@
 .body-content {
     margin-top: 20px;
+    width: 100%;
 }
 
 .file-list-container {
     margin: 0 auto;
+    width: 700px;
 }
 
 .heading {
@@ -17,8 +19,8 @@
 }
 
 .filebox {
-    width: 45%;
-    height: 100%;
+    width: 49.5%;
+    height: 85vh;
     padding: 10px;
     overflow: auto;
     text-indent: 0px;
