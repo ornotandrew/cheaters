@@ -1,6 +1,6 @@
 from app.models import Submission, Report
 from lib.comparator import Comparator
-from lib.UploadFileHandler import FileHandler
+from lib.uploadfilehandler import FileHandler
 from lib.fingerprinter import Fingerprinter
 from time import time
 

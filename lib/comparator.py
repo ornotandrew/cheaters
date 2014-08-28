@@ -10,7 +10,7 @@ class Comparator:
         :param submission_list: A list containing elements of type Submission(Model)
         """
         self.min_lines_matched = 3
-        self.match_threshold = 33
+        self.match_threshold = 10
 
         # this report object should contain dictionaries of the form
         # {filename_1, filename_2, percent_match, line_matches}
@@ -27,23 +27,27 @@ class Comparator:
 
 
     @staticmethod
-    def calculate_percent_match(line_matches, sub_1, sub_2):
+    def calculate_percent_match(line_ranges, sub_1, sub_2):
         """
-        :param line_matches: A list of tuples, containing matching lines
+        :param line_ranges: A list of tuples, containing matching lines
         :return: A percentage of the number of lines matched in the smaller file.
         This does not include blank lines, because we don't match on blank lines and want to me consistent
         """
-        num_matches = len(line_matches)
+        num_matches_1 = sum(len(x[0]) for x in line_ranges)
         num_lines_1 = len([x for x in sub_1.file_contents.split("\n") if x != ""])
-        num_lines_2 = len([x for x in sub_2.file_contents.split("\n") if x != ""])
+        percent_1 = num_matches_1/num_lines_1
 
-        return int(num_matches/min(num_lines_1, num_lines_2)*100)
+        num_matches_2 = sum(len(x[1]) for x in line_ranges)
+        num_lines_2 = len([x for x in sub_2.file_contents.split("\n") if x != ""])
+        percent_2 = num_matches_2/num_lines_2
+
+        return int(max(percent_1, percent_2)*100)
 
     def compare_fingerprints(self, f_1, f_2):
         """
         :param f_1: Fingerprint A, containing a list containing elements -> [hash, [line_numbers]]
         :param f_2: see Fingerprint A
-        :return: A list of the form [(line in A, line in B),...]
+        :return: A list of the form [(line range in A, line range in B),...]
         """
 
         dict_f_1 = dict(f_1)
@@ -59,17 +63,25 @@ class Comparator:
         all_matches = sorted(list(set(all_matches)))
 
         # we now want to only show cases where there are a few lines matched consecutively
+        final_matches = []
         matches_a = [x[0] for x in all_matches]
-        final_matches_a = []
-        # the following 2 lines were tearfully whispered by a great wizard
-        # as he gave his life to aid the cause of Python
-        # (it's one of the itertools examples in the docs)
+        # iterate over consecutive sections in A
         for k, g in groupby(enumerate(matches_a), lambda t: t[0]-t[1]):
-            match_range = list(map(itemgetter(1), g))
-            if len(match_range) >= self.min_lines_matched:
-                final_matches_a += match_range
-        # TODO: there's probably a clever way to do this...
-        final_matches_b = [x[1] for x in all_matches if x[0] in final_matches_a]
-        result = [x for x in all_matches if x[0] in final_matches_a or x[1] in final_matches_b]
+            match_range_a = list(map(itemgetter(1), g))
 
-        return result
+            # find the consecutive line matches in a over the threshold
+            if len(match_range_a) >= self.min_lines_matched:
+                match_temp = [x[1] for x in all_matches if x[0] in match_range_a]
+
+                # iterate over consecutive sections in B
+                for h, j in groupby(enumerate(match_temp), lambda t: t[0]-t[1]):
+                    match_range_b = list(map(itemgetter(1), j))
+
+                    # find the consecutive line matches in a over the threshold
+                    if len(match_range_b) >= self.min_lines_matched:
+                        final_matches.append((match_range_a, match_range_b))
+                        # we only want one match in B for each match in A
+                        break
+
+        return final_matches
+

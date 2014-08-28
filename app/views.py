@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponseRedirect
 import operator
 from datetime import datetime
-from app.SubmissionController import SubmissionController
+from app.submissioncontroller import SubmissionController
 from app.models import Report, Submission
 from app.forms import UploadFileForm
 from django.views.generic import View, ListView
@@ -117,10 +117,12 @@ class ReportListView(View):
 
             })
 
-def highlight(file, line_numbers):
+def highlight(file, line_ranges):
+    col = ["#cc3f3f ", "#379fd8", "#87c540", "#be7cd2", "#ff8ecf", "#e5e155"]
 
     source = file.splitlines()
-    for line_number in line_numbers:
-        source[line_number-1] = "<span class=\"highlight\">"+source[line_number-1]+"</span>"
+    for i, line_range in enumerate(line_ranges):
+        for line in line_range:
+            source[line-1] = r'<span style="color:'+col[i % 12]+r';">'+source[line-1]+r'</span>'
 
     return "\n".join(source)
