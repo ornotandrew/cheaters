@@ -1,7 +1,7 @@
 import cProfile
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponseRedirect
-
+import operator
 from datetime import datetime
 from app.SubmissionController import SubmissionController
 from app.models import Report, Submission
@@ -51,6 +51,15 @@ class ReportView(View):
     def get(self, request, report_id):
         report = Report.objects.get(id=report_id)
         report.match_list = eval(report.match_list)
+        report.match_list.sort(key=operator.itemgetter("percent_match"), reverse=True)
+        # get the corresponding user_id and filename for each file id and insert it into the dictionary
+        for match in report.match_list:
+            submission = Submission.objects.get(id= match["file_2"])
+            match["user2"] = submission.user_id
+            match["file_name_2"] = submission.filename
+            submission = Submission.objects.get(id= match["file_1"])
+            match["user1"] = submission.user_id
+            match["file_name_1"] = submission.filename
 
         return render(request, "report.html", {"title": "Report File List",
                                                          "report_id": report_id,

@@ -8,8 +8,8 @@
         <thead>
             <tr>
               <th>#</th>
-              <th>File 1</th>
-              <th>File 2</th>
+              <th>User 1 (file name)</th>
+              <th>User 2 (file name)</th>
               <th>Match %</th>
             </tr>
         </thead>
@@ -23,12 +23,12 @@
               </td>
               <td>
                   <a href="{% url 'report' report_id comparison.file_1 comparison.file_2 %}">
-                    {{ comparison.file_1 }}
+                    {{ comparison.user1 }} ({{ comparison.file_name_1 }})
                   </a>
               </td>
               <td>
                   <a href="{% url 'report' report_id comparison.file_1 comparison.file_2 %}">
-                    {{ comparison.file_2 }}
+                    {{ comparison.user2 }} ({{ comparison.file_name_2 }})
                   </a>
               </td>
               <td>
