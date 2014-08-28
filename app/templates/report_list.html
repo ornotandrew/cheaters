@@ -1,0 +1,42 @@
+{% extends "Layout.html" %}
+
+{% block content %}
+<div class="heading">List of Reports{{ report_id }}</div>
+<div class="file-list-container">
+
+    <table class="table table-striped table-hover table-links-block">
+        <thead>
+            <tr>
+              <th>#</th>
+              <th>ID</th>
+              <th>Date</th>
+
+            </tr>
+        </thead>
+        <tbody>
+        {% for report in report_list %}
+            <tr>
+                 <td>
+                  <a href="{% url 'report_file_list' report.id %}">
+                    {{ forloop.counter0 }}
+                  </a>
+                </td>
+                <td>
+                  <a href="{% url 'report_file_list' report.id %}">
+                    {{ report.id }}
+                  </a>
+                </td>
+                <td>
+                  <a href="{% url 'report_file_list' report.id %}">
+                    {{ report.date }}
+                  </a>
+                </td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

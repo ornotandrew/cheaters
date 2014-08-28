@@ -61,7 +61,7 @@ class ComparisonView(View):
     """
     shows the comparison between 2 given files.
     """
-    def get(self, request,report_id, file_1_id, file_2_id):
+    def get(self, request, report_id, file_1_id, file_2_id):
         report = Report.objects.get(id=report_id)
         report.match_list = eval(report.match_list)
         file_1_id = int(file_1_id)
@@ -88,6 +88,24 @@ class ComparisonView(View):
                 "file2": source2
             })
 
+
+class ReportListView(View):
+    """
+    lists the reports for submissions flagged
+    """
+    def get(self, request):
+        report_list = Report.objects.all()
+        print(len(report_list))
+        return render(
+            request,
+            "report_list.html",
+            {
+                "title": "Report List Page",
+                "year": datetime.now().year,
+                "report_list": report_list,
+
+
+            })
 
 def highlight(file, line_numbers):
 
