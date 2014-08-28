@@ -94,7 +94,8 @@ class ReportListView(View):
     lists the reports for submissions flagged
     """
     def get(self, request):
-        report_list = Report.objects.all()
+        report_list = Report.objects.all().order_by("-date")
+
         print(len(report_list))
         return render(
             request,
