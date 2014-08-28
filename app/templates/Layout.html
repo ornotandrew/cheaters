@@ -2,41 +2,41 @@
 {# Theme is at http://bootswatch.com/slate/ #}
 <html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ title }}</title>
-  {% load staticfiles %}
-  <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}"/>
-  <link rel="stylesheet" type="text/css" href="{% static 'css/site.css' %}" />
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.min.js"></script>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{{ title }}</title>
+	{% load staticfiles %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/site.css' %}" />
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.min.js"></script>
 </head>
 
 <body>
-  <div class="navbar navbar-default">
-	<div class="navbar-header">
-	<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
-	  <span class="icon-bar"></span>
-	  <span class="icon-bar"></span>
-	  <span class="icon-bar"></span>
-	</button>
-	<a class="navbar-brand" href="#">Cheaters</a>
+	<div class="navbar navbar-default">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#">Cheaters</a>
+		</div>
+
+		<div class="navbar-collapse collapse navbar-responsive-collapse">
+			<ul class="nav navbar-nav">
+				<li class="active"><a href="{% url 'fileupload' %}">Home</a></li>
+				<li><a href="{% url 'report_list' %}">Reports</a></li>
+				
+			</ul>
+		</div>
 	</div>
 
-	<div class="navbar-collapse collapse navbar-responsive-collapse">
-	<ul class="nav navbar-nav">
-	  <li class="active"><a href="{% url 'fileupload' %}">Home</a></li>
-	  <li><a href="{% url 'report_list' %}">Reports</a></li>
-	
-	</ul>
+
+	<div class="container body-content">
+		{% block content %}
+		{% endblock %}
 	</div>
-  </div>
-
-
-  <div class="container body-content">
-	{% block content %}
-	{% endblock %}
-  </div>
 
 
 </body>
