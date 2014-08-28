@@ -123,6 +123,6 @@ def highlight(file, line_ranges):
     source = file.splitlines()
     for i, line_range in enumerate(line_ranges):
         for line in line_range:
-            source[line-1] = r'<span style="color:'+col[i % 12]+r';">'+source[line-1]+r'</span>'
+            source[line-1] = r'<span style="color:'+col[i % len(col)]+r';">'+source[line-1]+r'</span>'
 
     return "\n".join(source)
