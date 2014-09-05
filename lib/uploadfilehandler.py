@@ -46,7 +46,5 @@ class FileHandler():
         :return: The increment of the current highest submission id
         """
         query = Submission.objects.order_by("-submission_id")
-        if not query:
-            return 0
-        else:
-            return query[0].submission_id + 1
+
+        return 0 if not query else query[0].submission_id + 1
