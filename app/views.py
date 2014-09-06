@@ -11,26 +11,13 @@ from django.views.generic.edit import FormView
 from django.core.urlresolvers import reverse_lazy, reverse
 
 import os
-# Create your views here.
-
-
-class IndexView(View):
-    def get(self, request):
-        assert isinstance(request, HttpRequest)
-        return render(
-            request,
-            'index.html',
-            {
-                'title': 'Home Page',
-                'form': UploadFileForm()
-            })
 
 
 class UploadFileView(FormView):
     """
     :return: redirects to report_file_list with the report_id as a parameter
     """
-    template_name = "index.html"
+
     form_class = UploadFileForm
 
     def form_valid(self, form):

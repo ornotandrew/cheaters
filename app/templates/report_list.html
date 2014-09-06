@@ -1,6 +1,11 @@
 {% extends "layout.html" %}
 
+
 {% block content %}
+    {% block uploadfile %}
+        {% include "upload_file_form.html" %}
+    {% endblock %}
+
 <div class="heading">List of Reports{{ report_id }}</div>
 <div class="file-list-container">
 
