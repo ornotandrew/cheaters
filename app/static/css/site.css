@@ -39,7 +39,14 @@
 
 .table-links-block td a {
     display: block;
+    padding: 8px;
     height: 100%;
     width: 100%;
     text-decoration: none;
+}
+
+.table-links-block tbody tr td {
+
+    padding: 0px ;
+
 }
