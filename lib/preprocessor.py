@@ -1,8 +1,10 @@
+from lib import normalizer
+
 class Preprocessor():
     # TODO: THIS SHOULD NOT BE A CLASS
-    def __init__(self, source):
+    def __init__(self, source, filename):
         self.line_map = self.create_line_map(source)
-        self.processed_source = self.normalize(source)
+        self.processed_source = normalizer.normalize(source, filename)
 
     def create_line_map(self, source):
         """
@@ -24,6 +26,3 @@ class Preprocessor():
                 line_map.append(current_line)
         return line_map
 
-
-    def normalize(self, source):
-        return source.replace(" ", "").replace("\n", "")

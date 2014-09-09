@@ -35,3 +35,8 @@ else:
 #get gcd and print
 ans = gcd(eval(a), eval(b))
 print("The GCD is:",ans)
+
+def somefunc():
+    print("hello")
+
+somefunc()

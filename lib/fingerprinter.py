@@ -15,7 +15,7 @@ class Fingerprinter:
     This guarantees point (1) above
     """
 
-    def __init__(self, source):
+    def __init__(self, source, filename):
         """
         The process here is as follows:
             normalize -> generate ngrams -> hash ngrams -> winnow
@@ -24,7 +24,7 @@ class Fingerprinter:
         t = 15
         w = t - n + 1
 
-        pre = Preprocessor(source)
+        pre = Preprocessor(source, filename)
         ngrams = self.get_ngram_lines(pre.processed_source, pre.line_map, n)
         hashes = self.get_hash_values(ngrams)
         self.fingerprint = self.winnow(hashes, w)

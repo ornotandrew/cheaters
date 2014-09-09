@@ -22,7 +22,7 @@ class SubmissionController:
         # fill out the fingerprints of the submissions
         t = time()
         for submission in submission_list:
-            fingerprinter = Fingerprinter(submission.file_contents)
+            fingerprinter = Fingerprinter(submission.file_contents, submission.filename)
             submission.fingerprint = fingerprinter.fingerprint
         t = time()-t
         print("{0:<35}{1:.5f}".format("Generated fingerprints", t))
