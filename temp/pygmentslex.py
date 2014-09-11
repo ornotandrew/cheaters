@@ -17,15 +17,13 @@ def reformat(code, lexer, formatter):
 class NormalizeFormatter(Formatter):
     def format(self, tokensource, outfile):
         for ttype, value in tokensource:
-            if ttype in [Token.Name, Token.Name.Function, Token.Name.Attribute]:
+            if ttype in [Token.Name.Function]:
+                outfile.write("F")
+            elif ttype in [Token.Name]:
                 outfile.write("V")
             else:
                 outfile.write(value)
 
-
-
-filename = input("filename>>")
+filename = "c.py"
 source = open(filename, "r").read()
 print(normalize(source, filename))
-
-
