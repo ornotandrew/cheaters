@@ -10,20 +10,15 @@
     <table class="table table-striped table-hover table-links-block">
         <thead>
             <tr>
-                <th>#</th>
                 <th>ID</th>
                 <th>Date</th>
+                <th>Comment</th>
 
             </tr>
         </thead>
         <tbody>
             {% for report in report_list %}
             <tr>
-                <td>
-                    <a href="{% url 'report_file_list' report.id %}">
-                        {{ forloop.counter }}
-                    </a>
-                </td>
                 <td>
                     <a href="{% url 'report_file_list' report.id %}">
                         {{ report.id }}
