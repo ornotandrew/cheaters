@@ -2,16 +2,14 @@
 <div>
     <form class="form-horizontal" action="{% url "fileupload" %}" method="post" enctype="multipart/form-data" >
         <div class="form-group">
-            <label class="control-label col-xs-2" for="id_file">File</label>
-            <span class="col-xs-2 fileContainer btn btn-primary"> click to add file
+            <label class="control-label" for="id_file"></label>
+            <span class="col-xs-2 fileContainer btn btn-primary"> Select zip file
                 <input id="id_file" name="file" type="file"/>
             </span>
             <label class="control-label" for="id_file" id="id_file_name"></label>
         </div>
         <div class="form-group">
-            <div class="col-xs-offset-2 ">
-                <input class = "btn btn-primary" type="submit" value="submit"/>
-            </div>
+            <input class = "btn btn-primary fileContainer" type="submit" value="Submit"/>
         </div>
     </form>
 </div>

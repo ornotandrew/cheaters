@@ -6,9 +6,11 @@
 .file-list-container {
     margin: 0 auto;
     width: 700px;
+    border: solid 2px #2780E3;
 }
 
 .heading {
+    position: inherit;
     font-size: 30px;
     text-align: center;
     margin-bottom: 15px;
@@ -54,12 +56,18 @@
     padding: 0px ;
 }
 
+.upload-form-container {
+    position: absolute;
+    top: 130px;
+}
+
 .fileContainer {
     overflow: hidden;
-    position: relative;
-    margin-right: 5px;
-    width: 150px;
+    width: 120px;
+    margin-right: 10px;
+    left: 0;
 }
+
 
 .fileContainer [type=file] {
     cursor: inherit;
