@@ -8,11 +8,9 @@
 		<thead>
 			<tr>
 				<th>#</th>
-				<th>User 1</th>
-				<th>Filename</th>
-				<th>User 2</th>
-				<th>Filename</th>
 				<th>Match %</th>
+				<th>User A</th>
+				<th>User B</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -23,6 +21,11 @@
 						{{ forloop.counter }}
 					</a>
 				</td>
+                <td>
+					<a href="{% url 'report' report_id comparison.file_1 comparison.file_2 %}">
+						{{ comparison.percent_match }}
+					</a>
+				</td>
 				<td>
 					<a href="{% url 'report' report_id comparison.file_1 comparison.file_2 %}">
 						{{ comparison.user1 }}
@@ -30,22 +33,7 @@
 				</td>
 				<td>
 					<a href="{% url 'report' report_id comparison.file_1 comparison.file_2 %}">
-						{{ comparison.file_name_1 }}
-					</a>
-				</td>
-				<td>
-					<a href="{% url 'report' report_id comparison.file_1 comparison.file_2 %}">
 						{{ comparison.user2 }}
-					</a>
-				</td>
-				<td>
-					<a href="{% url 'report' report_id comparison.file_1 comparison.file_2 %}">
-						{{ comparison.file_name_2 }}
-					</a>
-				</td>
-				<td>
-					<a href="{% url 'report' report_id comparison.file_1 comparison.file_2 %}">
-						{{ comparison.percent_match }}
 					</a>
 				</td>
 			</tr>
