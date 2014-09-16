@@ -1,6 +1,7 @@
 import cProfile
+import json
 from django.shortcuts import render, redirect
-from django.http import HttpRequest, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
 import operator
 from datetime import datetime
 from app.submissioncontroller import SubmissionController
@@ -29,11 +30,14 @@ class UploadFileView(FormView):
         sub_controller = SubmissionController(form.cleaned_data['file'])
         #cProfile.runctx("SubmissionController(form.cleaned_data['file'])", locals(), globals(), "temp/profile.prof")
         self.report = sub_controller.report
+        response = {"report_id": self.report.id}
+        response = json.dumps(response)
 
-        return HttpResponseRedirect(self.get_success_url())
+        return HttpResponse(response, content_type="application/json")
 
-    def get_success_url(self):
-        return reverse("report_file_list", kwargs={"report_id": self.report.id})
+    def form_invalid(self, form):
+        data = json.dumps(form.errors)
+        return HttpResponse(data, status=400, content_type='application/json')
 
 
 class ReportView(View):
