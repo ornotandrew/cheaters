@@ -11,7 +11,13 @@ class Comparator:
             get fingerprints -> compare
         :param submission_list: A list containing elements of type Submission(Model)
         """
+
+        # The minimum number of consecutive matched lines to consider
         self.min_lines_matched = 3
+        # The number of lines in a larger, matching block which are allowed to not match but still be included 
+        # This is for when someone adds a comment in the middle of something they copied
+        self.separation_allowance = 3
+        # The minimum percentage match which we care about
         self.match_threshold = 10
 
         # this report object should contain dictionaries of the form
@@ -107,6 +113,30 @@ class Comparator:
                         final_matches.append((match_range_a, match_range_b))
                         # we only want one match in B for each match in A
                         break
+
+        if len(final_matches) < 2:
+            return final_matches
+
+        # we now want to include lines which may be splitting big chunks of copied blocks because they didn't match
+        pos = 1
+        while True:
+            a_current = final_matches[pos][0]
+            b_current = final_matches[pos][1]
+            a_prev = final_matches[pos-1][0]
+            b_prev = final_matches[pos-1][1]
+
+            grace_a = a_current[0] - a_prev[-1]
+            grace_b = b_current[0] - b_prev[-1]
+
+            if grace_a <= self.separation_allowance and grace_b <= self.separation_allowance:
+                lines_a = final_matches[pos-1][0] + list(range(a_prev[-1]+1, a_current[0])) + a_current
+                lines_b = final_matches[pos-1][1] + list(range(b_prev[-1]+1, b_current[0])) + b_current
+                final_matches[pos-1] = (lines_a, lines_b)
+                del final_matches[pos]
+            else:
+                pos += 1
+            if pos >= len(final_matches):
+                break
 
         return final_matches
 
