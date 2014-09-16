@@ -2,12 +2,19 @@ from pygments import lex, format
 from pygments.token import Token
 from pygments.formatter import Formatter
 from pygments.lexers import get_lexer_for_filename
+from pygments.util import ClassNotFound
 
 
 def normalize(source, filename):
-    result = reformat(source, get_lexer_for_filename(filename), NormalizeFormatter())
-    result = result.replace(" ", "").replace("\n", "")
-    return result
+    try:
+        lexer = get_lexer_for_filename(filename)
+        #source = reformat(source, lexer, NormalizeFormatter())
+    except ClassNotFound:
+        print("no suitable lexer found")
+
+    finally:
+        source = source.replace(" ", "").replace("\n", "")
+    return source
 
 
 def reformat(code, lexer, formatter):
