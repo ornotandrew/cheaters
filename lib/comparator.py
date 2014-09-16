@@ -19,6 +19,8 @@ class Comparator:
         self.report = []
 
         for sub_a, sub_b in combinations(submission_list, 2):
+            if sub_a.user_id == sub_b.user_id:
+                break
             result = self.get_result_dict(sub_a, sub_b)
             if result["percent_match"] > self.match_threshold:
                 self.report.append(result)
@@ -32,6 +34,8 @@ class Comparator:
 
             for sub in submission_list:
                 for hist_sub in history_list:
+                    if sub.user_id == hist_sub.user_id:
+                        break
                     print("Comparing to history with ID {0}".format(hist_sub.submission_id))
                     result = self.get_result_dict(sub, hist_sub)
                     if result["percent_match"] > self.match_threshold:
