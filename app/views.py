@@ -21,6 +21,11 @@ class UploadFileView(FormView):
     form_class = UploadFileForm
 
     def form_valid(self, form):
+
+        print("year: ", form.cleaned_data["year"])
+        print("description: ", form.cleaned_data["description"])
+        print("param_n: ", form.cleaned_data["param_n"])
+        print("param_t: ", form.cleaned_data["param_t"])
         sub_controller = SubmissionController(form.cleaned_data['file'])
         #cProfile.runctx("SubmissionController(form.cleaned_data['file'])", locals(), globals(), "temp/profile.prof")
         self.report = sub_controller.report
