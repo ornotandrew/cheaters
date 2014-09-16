@@ -56,8 +56,8 @@ class ReportView(View):
             match["user1"] = submission.user_id
 
         return render(request, "report.html", {"title": "Report File List",
-                                                         "report_id": report_id,
-                                                         "object_list": report.match_list})
+                                                        "report_id": report_id,
+                                                        "object_list": report.match_list})
 
 
 class ComparisonView(View):
@@ -107,8 +107,6 @@ class ReportListView(View):
                 "title": "Report List Page",
                 "year": datetime.now().year,
                 "report_list": report_list,
-
-
             })
 
 def highlight(file, line_ranges):
