@@ -11,6 +11,7 @@
 				<th>Match %</th>
 				<th>User A</th>
 				<th>User B</th>
+                <th>Submission IDs</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -34,6 +35,11 @@
 				<td>
 					<a href="{% url 'report' report_id comparison.file_1 comparison.file_2 %}">
 						{{ comparison.user2 }}
+					</a>
+				</td>
+                <td>
+					<a href="{% url 'report' report_id comparison.file_1 comparison.file_2 %}">
+						{{ comparison.submission_id_a }}  -  {{ comparison.submission_id_b }}
 					</a>
 				</td>
 			</tr>

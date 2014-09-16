@@ -1,9 +1,11 @@
+import datetime
 from itertools import groupby, combinations
 from operator import itemgetter
+from app.models import Submission
 
 
 class Comparator:
-    def __init__(self, submission_list):
+    def __init__(self, submission_list, compare_history=False, comparison_year=2012):
         """
         The process is as follows:
             get fingerprints -> compare
@@ -16,29 +18,52 @@ class Comparator:
         # {filename_1, filename_2, percent_match, line_matches}
         self.report = []
 
-        for sub_1, sub_2 in combinations(submission_list, 2):
-            result = {"file_1": sub_1.id, "file_2": sub_2.id}
-            result["line_matches"] = self.compare_fingerprints(sub_1.fingerprint, sub_2.fingerprint)
-            result["percent_match"] = self.calculate_percent_match(result["line_matches"], sub_1, sub_2)
+        for sub_a, sub_b in combinations(submission_list, 2):
+            if sub_a.user_id == sub_b.user_id:
+                break
+            result = self.get_result_dict(sub_a, sub_b)
             if result["percent_match"] > self.match_threshold:
                 self.report.append(result)
-            # TODO: Compare to historical data
 
+        # Compare to historical data
+        if compare_history:
+            history_list = Submission.objects.filter(date__gte=datetime.date(comparison_year, 1, 1))\
+                                             .exclude(submission_id=submission_list[0].submission_id)
+            for submission in history_list:
+                submission.fingerprint = eval(submission.fingerprint)
+
+            for sub in submission_list:
+                for hist_sub in history_list:
+                    if sub.user_id == hist_sub.user_id:
+                        break
+                    print("Comparing to history with ID {0}".format(hist_sub.submission_id))
+                    result = self.get_result_dict(sub, hist_sub)
+                    if result["percent_match"] > self.match_threshold:
+                        self.report.append(result)
+
+    def get_result_dict(self, sub_a, sub_b):
+        result = {"file_1": sub_a.id,
+                  "file_2": sub_b.id,
+                  "line_matches": self.compare_fingerprints(sub_a.fingerprint, sub_b.fingerprint),
+                  "submission_id_a": sub_a.submission_id,
+                  "submission_id_b": sub_b.submission_id}
+        result["percent_match"] = self.calculate_percent_match(result["line_matches"], sub_a, sub_b)
+        return result
 
 
     @staticmethod
-    def calculate_percent_match(line_ranges, sub_1, sub_2):
+    def calculate_percent_match(line_ranges, sub_a, sub_b):
         """
         :param line_ranges: A list of tuples, containing matching lines
         :return: A percentage of the number of lines matched in the smaller file.
         This does not include blank lines, because we don't match on blank lines and want to me consistent
         """
         num_matches_1 = sum(len(x[0]) for x in line_ranges)
-        num_lines_1 = len([x for x in sub_1.file_contents.split("\n") if x != ""])
+        num_lines_1 = len([x for x in sub_a.file_contents.split("\n") if x != ""])
         percent_1 = num_matches_1/num_lines_1
 
         num_matches_2 = sum(len(x[1]) for x in line_ranges)
-        num_lines_2 = len([x for x in sub_2.file_contents.split("\n") if x != ""])
+        num_lines_2 = len([x for x in sub_b.file_contents.split("\n") if x != ""])
         percent_2 = num_matches_2/num_lines_2
 
         return int(max(percent_1, percent_2)*100)
