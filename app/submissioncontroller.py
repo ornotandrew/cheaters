@@ -34,7 +34,8 @@ class SubmissionController:
         Submission.objects.bulk_create(submission_list)
         # retrieve same submissions now that the db has given them all primary keys
 
-        submission_list = Submission.objects.filter(date__gte=datetime.date(comparison_year, 1, 1))
+        submission_list = Submission.objects.filter(submission_id=self.submission_id)
+
         # eval all the fingerprints from string to list
         for submission in submission_list:
             submission.fingerprint = eval(submission.fingerprint)
@@ -43,7 +44,7 @@ class SubmissionController:
 
         # do the comparison and get the report
         t = time()
-        comparator = Comparator(submission_list)
+        comparator = Comparator(submission_list, compare_history=True, comparison_year=comparison_year)
         t = time()-t
         print("{0:<35}{1:.5f}".format("Performed comparison", t))
 
