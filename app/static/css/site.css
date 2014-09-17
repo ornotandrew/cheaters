@@ -3,6 +3,10 @@
     width: 100%;
 }
 
+.emph {
+    text-shadow: 0px 0px 5px #000;
+}
+
 .file-list-container {
     margin: 0 auto;
     width: 700px;
