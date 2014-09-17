@@ -43,7 +43,6 @@ class Comparator:
                 for hist_sub in history_list:
                     if sub.user_id == hist_sub.user_id:
                         break
-                    print("Comparing to history with ID {0}".format(hist_sub.submission_id))
                     result = self.get_result_dict(sub, hist_sub)
                     if result["percent_match"] > self.match_threshold:
                         self.report.append(result)
@@ -65,13 +64,12 @@ class Comparator:
         :return: A percentage of the number of lines matched in the smaller file.
         This does not include blank lines, because we don't match on blank lines and want to me consistent
         """
-        num_matches_1 = sum(len(x[0]) for x in line_ranges)
-        num_lines_1 = len([x for x in sub_a.file_contents.split("\n") if x != ""])
-        percent_1 = num_matches_1/num_lines_1
+        num_matches = sum(len(x) for x in line_ranges)
+        num_lines_1 = sub_a.file_contents.count("\n")
+        percent_1 = num_matches/num_lines_1
 
-        num_matches_2 = sum(len(x[1]) for x in line_ranges)
-        num_lines_2 = len([x for x in sub_b.file_contents.split("\n") if x != ""])
-        percent_2 = num_matches_2/num_lines_2
+        num_lines_2 = sub_b.file_contents.count("\n")
+        percent_2 = num_matches/num_lines_2
 
         return int(max(percent_1, percent_2)*100)
 
@@ -91,55 +89,62 @@ class Comparator:
         # and construct a list of unique tuples of matching lines -> [(line in a, line in b), ..]
         all_matches = []
         for match in hash_matches:
-            if not len(dict_f_1[match]) == len(dict_f_2[match]):
-                print(dict_f_1[match], dict_f_2[match])
             all_matches += zip(dict_f_1[match], dict_f_2[match])
         all_matches = sorted(list(set(all_matches)))
 
         # we now want to only show cases where there are a few lines matched consecutively
+        match_ranges_a = self.get_ranges([x[0] for x in all_matches])
+        match_ranges_b = self.get_ranges([x[1] for x in all_matches])
+
         final_matches = []
-        matches_a = [x[0] for x in all_matches]
-        # iterate over consecutive sections in A
-        for k, g in groupby(enumerate(matches_a), lambda t: t[0]-t[1]):
-            match_range_a = list(map(itemgetter(1), g))
-
-            # find the consecutive line matches in a over the threshold
-            if len(match_range_a) >= self.min_lines_matched:
-                match_temp = [x[1] for x in all_matches if x[0] in match_range_a]
-
-                # iterate over consecutive sections in B
-                for h, j in groupby(enumerate(match_temp), lambda t: t[0]-t[1]):
-                    match_range_b = list(map(itemgetter(1), j))
-
-                    # find the consecutive line matches in a over the threshold
-                    if len(match_range_b) >= self.min_lines_matched:
-                        final_matches.append((match_range_a, match_range_b))
-                        # we only want one match in B for each match in A
-                        break
+        for match in all_matches:
+            if match[0] in match_ranges_a and match[1] in match_ranges_b:
+                final_matches.append(match)
 
         if len(final_matches) < 2:
             return final_matches
 
         # we now want to include lines which may be splitting big chunks of copied blocks because they didn't match
-        pos = 1
-        while True:
+        for pos in range(len(final_matches)):
             a_current = final_matches[pos][0]
             b_current = final_matches[pos][1]
             a_prev = final_matches[pos-1][0]
             b_prev = final_matches[pos-1][1]
 
-            grace_a = a_current[0] - a_prev[-1]
-            grace_b = b_current[0] - b_prev[-1]
+            grace_a = a_current - a_prev
+            grace_b = b_current - b_prev
 
             if grace_a <= self.separation_allowance and grace_b <= self.separation_allowance:
-                lines_a = final_matches[pos-1][0] + list(range(a_prev[-1]+1, a_current[0])) + a_current
-                lines_b = final_matches[pos-1][1] + list(range(b_prev[-1]+1, b_current[0])) + b_current
-                final_matches[pos-1] = (lines_a, lines_b)
-                del final_matches[pos]
+                for i in range(1, max(grace_a, grace_b)):
+                    final_matches.append((a_prev+i, b_prev+i))
+
+        # reconstruct the groups. we can now just look at a
+        temp = sorted(final_matches)
+        final_matches = []
+        current_range = []
+        for i in range(1, len(temp)):
+            # don't add duplicate matches
+            if temp[i][0] == temp[i-1][0]:
+                continue
+            # if the number of a is one more than the previous a, add the match to the current range
+            elif temp[i][0] == temp[i-1][0]+1:
+                current_range.append(temp[i])
+            # otherwise, start a new current range
             else:
-                pos += 1
-            if pos >= len(final_matches):
-                break
+                if len(current_range) >= self.min_lines_matched:
+                    final_matches.append(current_range)
+                current_range = []
+        # add the final range
+        if len(current_range) >= self.min_lines_matched:
+            final_matches.append(current_range)
 
         return final_matches
 
+    def get_ranges(self, seq):
+        ranges = []
+        for k, g in groupby(enumerate(seq), lambda t: t[0]-t[1]):
+            temp = list(map(itemgetter(1), g))
+            # if len(temp) >= self.min_lines_matched:
+            #     ranges += temp
+            ranges += temp
+        return ranges

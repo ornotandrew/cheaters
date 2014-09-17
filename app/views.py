@@ -85,8 +85,8 @@ class ComparisonView(View):
         file1 = Submission.objects.get(id=file_1_id)
         file2 = Submission.objects.get(id=file_2_id)
         # highlight the necessary lines
-        source1 = highlight(file1.file_contents, [x[0] for x in line_matches])
-        source2 = highlight(file2.file_contents, [x[1] for x in line_matches])
+        source1 = highlight(file1.file_contents, line_matches, 0)
+        source2 = highlight(file2.file_contents, line_matches, 1)
 
         return render(
             request,
@@ -107,7 +107,6 @@ class ReportListView(View):
     def get(self, request):
         report_list = Report.objects.all().order_by("-date")
 
-        print(len(report_list))
         return render(
             request,
             "report_list.html",
@@ -117,12 +116,13 @@ class ReportListView(View):
                 "report_list": report_list,
             })
 
-def highlight(file, line_ranges):
+def highlight(file, match_ranges, index):
     col = ["#cc3f3f ", "#379fd8", "#87c540", "#be7cd2", "#ff8ecf", "#e5e155"]
 
     source = file.splitlines()
-    for i, line_range in enumerate(line_ranges):
-        for line in line_range:
+    for i, match_range in enumerate(match_ranges):
+        for match in match_range:
+            line = match[index]
             source[line-1] = r'<span style="color:'+col[i % len(col)]+r';">'+source[line-1]+r'</span>'
 
     return "\n".join(source)
