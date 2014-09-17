@@ -2,34 +2,46 @@
 <div>
     <form class="form-horizontal" id="uploadform" action="{% url "fileupload" %}" method="post" enctype="multipart/form-data" >
         <div class="form-group">
-            <label class="control-label" for="id_file"></label>
             <span class="col-xs-2 fileContainer btn btn-primary"> Select zip file
                 <input id="id_file" name="file" type="file"/>
             </span>
             <label class="control-label" for="id_file" id="id_file_name"></label>
         </div>
         <div class="form-group">
-            <label class="control-label" for="id_compare_from_year">Compare from year:</label>
-            <span class="col-xs-2">
-                <input class="input-sm" id="id_compare_from_year" name="year" type="text" placeholder="year" />
-            </span>
-        </div>
-        <div class="form-group">
-            <label class="control-label" for="id_param_t">Parameter t:</label>
             <span class="col-xs-2">
                 <input class="input-sm" id="id_param_t" name="param_t" type="text" placeholder="t"/>
             </span>
         </div>
         <div class="form-group">
-            <label class="control-label" for="id_param_n">Parameter w:</label>
             <span class="col-xs-2">
-                <input class="input-sm" id="id_param_n" name="param_n" type="text" placeholder="w"/>
+                <input class="input-sm" id="id_param_n" name="param_n" type="text" placeholder="n"/>
             </span>
         </div>
         <div class="form-group">
-            <label class="control-label" for="id_Description">Submission Description:</label>
             <span class="col-xs-2">
-                <input class="input-sm" id="id_Description" name="description" type="text" placeholder="description" />
+                <input class="input-sm" id="id_param_min_lines_matched" name="min_lines_matched" type="text" placeholder="Min lines matched" />
+            </span>
+        </div>
+        <div class="form-group">
+            <span class="col-xs-2">
+                <input class="input-sm" id="id_separation_allowance" name="separation_allowance" type="text" placeholder="Separation allowance" />
+            </span>
+        </div>
+        <div class="form-group">
+            <span class="col-xs-2">
+                <input class="input-sm" id="id_match_threshold" name="match_threshold" type="text" placeholder="Match threshold" />
+            </span>
+        </div>
+
+
+        <div class="form-group">
+            <span class="col-xs-2">
+                <input class="input-sm" id="id_compare_from_year" name="year" type="text" placeholder="Compare from year" />
+            </span>
+        </div>
+        <div class="form-group">
+            <span class="col-xs-2">
+                <input class="input-sm" id="id_Description" name="description" type="text" placeholder="Description" />
             </span>
         </div>
         <div class="form-group">

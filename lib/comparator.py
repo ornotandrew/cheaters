@@ -5,7 +5,8 @@ from app.models import Submission
 
 
 class Comparator:
-    def __init__(self, submission_list, compare_history=False, comparison_year=2012):
+    def __init__(self, submission_list, compare_history=False, comparison_year=2012,
+                 min_lines_matched=3, separation_allowance=2, match_threshold=10):
         """
         The process is as follows:
             get fingerprints -> compare
@@ -13,12 +14,12 @@ class Comparator:
         """
 
         # The minimum number of consecutive matched lines to consider
-        self.min_lines_matched = 3
+        self.min_lines_matched = min_lines_matched
         # The number of lines in a larger, matching block which are allowed to not match but still be included 
         # This is for when someone adds a comment in the middle of something they copied
-        self.separation_allowance = 3
+        self.separation_allowance = separation_allowance
         # The minimum percentage match which we care about
-        self.match_threshold = 10
+        self.match_threshold = match_threshold
 
         # this report object should contain dictionaries of the form
         # {filename_1, filename_2, percent_match, line_matches}
@@ -90,6 +91,8 @@ class Comparator:
         # and construct a list of unique tuples of matching lines -> [(line in a, line in b), ..]
         all_matches = []
         for match in hash_matches:
+            if not len(dict_f_1[match]) == len(dict_f_2[match]):
+                print(dict_f_1[match], dict_f_2[match])
             all_matches += zip(dict_f_1[match], dict_f_2[match])
         all_matches = sorted(list(set(all_matches)))
 
