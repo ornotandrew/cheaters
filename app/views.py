@@ -40,6 +40,14 @@ class UploadFileView(FormView):
         return HttpResponse(data, status=400, content_type='application/json')
 
 
+class AboutView(View):
+    """
+    gives a list of the comparisons in the report
+    """
+    def get(self, request):
+        return render(request, "about.html")
+
+
 class ReportView(View):
     """
     gives a list of the comparisons in the report

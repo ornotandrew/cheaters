@@ -6,13 +6,11 @@
 .file-list-container {
     margin: 0 auto;
     width: 700px;
-    border: solid 2px #2780E3;
 }
 
 .heading {
     position: inherit;
     font-size: 30px;
-    text-align: center;
     margin-bottom: 15px;
 }
 
@@ -33,6 +31,9 @@
     padding: 10px;
     overflow: auto;
     white-space: pre;
+}
+
+.box-glow {
     border: solid 2px #2780E3;
 }
 
@@ -80,5 +81,4 @@
     text-align: right;
     top: 0;
 }
-
 

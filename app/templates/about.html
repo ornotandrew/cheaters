@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <div class="text-left heading">Parameters</div>
+
+    <table class="table table-striped box-glow">
+        <thead>
+            <tr>
+                <th>Parameter</th>
+                <th>Default</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><b>t</b></td>
+                <td>10</td>
+                <td>
+                    If there is a substring match <i>at least</i> as long as <b>t</b>, then this match is guaranteed to be detected.
+                </td>
+            </tr>
+            <tr>
+                <td><b>n</b></td>
+                <td>6</td>
+                <td>
+                    No matches shorter than the <b>n</b> will be detected.
+                </td>
+            </tr>
+            <tr>
+                <td><b>Min lines matched</b></td>
+                <td>3</td>
+                <td>
+                    The minimum number of consecutive lines which need to match before the set is flagged.
+                </td>
+            </tr>
+            <tr>
+                <td><b>Separation allowance</b></td>
+                <td>2</td>
+                <td>
+                    Sometimes there will be large matching blocks of code. If there is one line in the middle of the block somewhere, it will split the block in two. This parameter controls how many lines within a block are allowed to <i>not</i> match, without splitting the larger block.
+                </td>
+            </tr>
+            <tr>
+                <td><b>Match threshold</b></td>
+                <td>10</td>
+                <td>
+                    This is a percentage. All matches smaller than this will be discarded.
+                </td>
+            </tr>
+            <tr>
+                <td><b>Compare from year</b></td>
+                <td>None</td>
+                <td>
+                    If you are comparing to past submissions, only submissions which were submitted on this year or later will be considered. Leaving this blank means no history comparisons will be made.
+                </td>
+            </tr>
+            <tr>
+                <td><b>Description</b></td>
+                <td>None</td>
+                <td>
+                    Something which will help you identify this submission at a later stage.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="heading">Authors</div>
+    <p>
+        This cheating detection system was written by Brendan Ball, Darren Silke and Andrew van Rooyen as a 3rd year Computer Science project at the University of Cape Town
+    </p>
+
+
+{% endblock %}
