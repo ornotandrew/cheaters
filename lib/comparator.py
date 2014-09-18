@@ -6,7 +6,7 @@ from app.models import Submission
 
 class Comparator:
     def __init__(self, submission_list, compare_history=False, comparison_year=2012,
-                 min_lines_matched=3, separation_allowance=2, match_threshold=10):
+                 min_lines_matched=3, separation_allowance=2, match_threshold=1):
         """
         The process is as follows:
             get fingerprints -> compare
@@ -77,7 +77,8 @@ class Comparator:
         """
         :param f_1: Fingerprint A, containing a list containing elements -> [hash, [line_numbers]]
         :param f_2: see Fingerprint A
-        :return: A list of the form [(line range in A, line range in B),...]
+        :return: A 2D list of the form containing base elements [(line range in A, line range in B),...]
+                 Which are then grouped with those which are consecutive to them
         """
 
         dict_f_1 = dict(f_1)
@@ -92,71 +93,82 @@ class Comparator:
             all_matches += zip(dict_f_1[match], dict_f_2[match])
         all_matches = sorted(list(set(all_matches)))
 
-        # we now want to only show cases where there are a few lines matched consecutively
-        match_ranges_a = self.get_ranges([x[0] for x in all_matches])
-        match_ranges_b = self.get_ranges([x[1] for x in all_matches])
+        # interpolate the matches, then get rid of outliers
+        all_matches = self.interpolate(all_matches)
+        filtered_matches = self.remove_outlying_matches(all_matches)
 
-        final_matches = []
-        for match in all_matches:
-            if match[0] in match_ranges_a and match[1] in match_ranges_b:
-                final_matches.append(match)
+        # group consecutive matches
+        grouped_matches = self.group_matches(filtered_matches)
 
-        final_matches = sorted(final_matches)
+        return grouped_matches
 
-        if len(final_matches) < 2:
-            return final_matches
+    def interpolate(self, match_seq):
+        """
+        :param seq: A sorted list of tuples
+        :return: The same list, but with 'gaps' filled in where the space between matches is sufficiently small
+        """
+        extra_matches = []
+        for i in range(1, len(match_seq)):
+            a_current, a_prev = match_seq[i][0], match_seq[i-1][0]
+            b_current, b_prev = match_seq[i][1], match_seq[i-1][1]
+            diff_a = a_current - a_prev
+            diff_b = b_current - b_prev
 
-        # we now want to include lines which may be splitting big chunks of copied blocks because they didn't match
-        for pos in range(1, len(final_matches)):
-            a_current = final_matches[pos][0]
-            b_current = final_matches[pos][1]
-            a_prev = final_matches[pos-1][0]
-            b_prev = final_matches[pos-1][1]
+            if 1 <= diff_a <= self.separation_allowance and 1 <= diff_b <= self.separation_allowance:
+                for offset in range(1, max(diff_a, diff_b)):
+                    extra_matches.append((a_prev+offset, b_prev+offset))
 
-            grace_a = a_current - a_prev
-            grace_b = b_current - b_prev
+        return sorted(match_seq + extra_matches)
 
-            if grace_a <= self.separation_allowance and grace_b <= self.separation_allowance:
-                for i in range(1, max(grace_a, grace_b)+1):
-                    final_matches.append((a_prev+i, b_prev+i))
+    def remove_outlying_matches(self, match_seq):
+        """
+        :param match_seq: An ordered list of tuples
+        :return: The list, after removing elements which aren't in sufficiently large groups of consecutive numbers
+        """
+        lines_a, lines_b = [x[0] for x in match_seq], [x[1] for x in match_seq]
+        accepted_a = self.remove_outlying_numbers(lines_a)
+        accepted_b = self.remove_outlying_numbers(lines_b)
 
-        # reconstruct the groups. we can now just look at a
-        temp = sorted(final_matches)
-        final_matches = []
-        current_range = []
-        for i in range(1, len(temp)):
-            # if the number of a is one more than the previous a, add the match to the current range
-            if temp[i][0] == temp[i-1][0]+1 or temp[i][0] == temp[i-1][0]:
-                current_range.append(temp[i])
-                if i == 1:
-                    current_range.append(temp[i-1])
-            # otherwise, start a new current range
-            else:
-                if len(current_range) >= self.min_lines_matched:
-                    final_matches.append(current_range)
-                current_range = []
-        # add the final range
-        if len(current_range) >= self.min_lines_matched:
-            final_matches.append(current_range)
+        result = []
+        for match in match_seq:
+            if match[0] in accepted_a and match[1] in accepted_b:
+                result.append(match)
 
-        # the relationships bwtween A and B are not continuous at this stage. Below is basically interpolation
-        for i in range(len(final_matches)):
-            a_range, b_range = [x[0] for x in final_matches[i]], [x[1] for x in final_matches[i]]
-            min_a, max_a = min(a_range), max(a_range)
-            min_b, max_b = min(b_range), max(b_range)
+        return result
 
-            interp_range = []
-            for offset in range(max(max_a - min_a, max_b - min_b)):
-                interp_range.append((min_a+offset, min_b+offset))
-
-            final_matches[i] = interp_range
-
-        return final_matches
-
-    @staticmethod
-    def get_ranges(seq):
-        ranges = []
+    def remove_outlying_numbers(self, seq):
+        """
+        :param seq: An ordered list of numbers
+        :return: The list, after removing elements which aren't in sufficiently large groups of consecutive numbers
+        """
+        result = []
         for k, g in groupby(enumerate(seq), lambda t: t[0]-t[1]):
             temp = list(map(itemgetter(1), g))
-            ranges += temp
-        return ranges
+            if len(temp) >= self.min_lines_matched:
+                result += temp
+        return result
+
+    @staticmethod
+    def group_matches(match_seq):
+        """
+        :param match_seq: An ordered list of matches, with no outliers
+        :return: A 2D list containing matches grouped with ones which are consecutive in the first element
+        """
+        if len(match_seq) == 0:
+            return []
+
+        result = []
+        current = [match_seq[0]]
+        for i in range(1, len(match_seq)):
+            # if the current match follows from the previous one (or is the same), add it to current (done on the A line)
+            if match_seq[i][0] == match_seq[i-1][0]+1 or match_seq[i][0] == match_seq[i-1][0]:
+                current.append(match_seq[i])
+            # otherwise, we are finished with the current bucket
+            else:
+                result.append(current)
+                current = [match_seq[i]]
+
+        # include the last bucket
+        result.append(current)
+
+        return result

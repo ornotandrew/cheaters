@@ -20,8 +20,8 @@ class Fingerprinter:
         The process here is as follows:
             normalize -> generate ngrams -> hash ngrams -> winnow
         """
-        n = 10
-        t = 15
+        n = 5
+        t = 8
         w = t - n + 1
 
         pre = Preprocessor(source, filename)
