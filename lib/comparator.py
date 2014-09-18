@@ -116,7 +116,7 @@ class Comparator:
             grace_a = a_current - a_prev
             grace_b = b_current - b_prev
 
-            if grace_a <= self.separation_allowance or grace_b <= self.separation_allowance:
+            if grace_a <= self.separation_allowance and grace_b <= self.separation_allowance:
                 for i in range(1, max(grace_a, grace_b)+1):
                     final_matches.append((a_prev+i, b_prev+i))
 
@@ -150,8 +150,6 @@ class Comparator:
                 interp_range.append((min_a+offset, min_b+offset))
 
             final_matches[i] = interp_range
-
-        print(final_matches)
 
         return final_matches
 
