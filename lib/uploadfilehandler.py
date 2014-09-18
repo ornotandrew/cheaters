@@ -32,11 +32,13 @@ class FileHandler():
                     # check if file is text and not binary
                     filetype = mimetypes.guess_type(file_path)[0]
                     # filters out mac generated files which aren't detected by mimetypes
-                    if not file_path.__contains__("__MACOSX") and filetype == "text/plain":
+                    if not file_path.__contains__("__MACOSX"):
 
                         dirname = os.path.dirname(file_path)
-                        # gets the first directory of the dirname incase there are subfolders
                         user_id = dirname.split("/")[0]
+                        if user_id == "":
+                            user_id = "None"
+
                         # concatenate files if it is the same user as previous iteration
                         # the file listing is in order of folders so this should always work to find all files for one user_id
                         if submission.user_id == user_id:
