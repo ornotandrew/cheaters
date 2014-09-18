@@ -101,11 +101,13 @@ class Comparator:
             if match[0] in match_ranges_a and match[1] in match_ranges_b:
                 final_matches.append(match)
 
+        final_matches = sorted(final_matches)
+
         if len(final_matches) < 2:
             return final_matches
 
         # we now want to include lines which may be splitting big chunks of copied blocks because they didn't match
-        for pos in range(len(final_matches)):
+        for pos in range(1, len(final_matches)):
             a_current = final_matches[pos][0]
             b_current = final_matches[pos][1]
             a_prev = final_matches[pos-1][0]
@@ -114,8 +116,8 @@ class Comparator:
             grace_a = a_current - a_prev
             grace_b = b_current - b_prev
 
-            if grace_a <= self.separation_allowance and grace_b <= self.separation_allowance:
-                for i in range(1, max(grace_a, grace_b)):
+            if grace_a <= self.separation_allowance or grace_b <= self.separation_allowance:
+                for i in range(1, max(grace_a, grace_b)+1):
                     final_matches.append((a_prev+i, b_prev+i))
 
         # reconstruct the groups. we can now just look at a
@@ -123,12 +125,11 @@ class Comparator:
         final_matches = []
         current_range = []
         for i in range(1, len(temp)):
-            # don't add duplicate matches
-            if temp[i][0] == temp[i-1][0]:
-                continue
             # if the number of a is one more than the previous a, add the match to the current range
-            elif temp[i][0] == temp[i-1][0]+1:
+            if temp[i][0] == temp[i-1][0]+1 or temp[i][0] == temp[i-1][0]:
                 current_range.append(temp[i])
+                if i == 1:
+                    current_range.append(temp[i-1])
             # otherwise, start a new current range
             else:
                 if len(current_range) >= self.min_lines_matched:
@@ -138,13 +139,26 @@ class Comparator:
         if len(current_range) >= self.min_lines_matched:
             final_matches.append(current_range)
 
+        # the relationships bwtween A and B are not continuous at this stage. Below is basically interpolation
+        for i in range(len(final_matches)):
+            a_range, b_range = [x[0] for x in final_matches[i]], [x[1] for x in final_matches[i]]
+            min_a, max_a = min(a_range), max(a_range)
+            min_b, max_b = min(b_range), max(b_range)
+
+            interp_range = []
+            for offset in range(max(max_a - min_a, max_b - min_b)):
+                interp_range.append((min_a+offset, min_b+offset))
+
+            final_matches[i] = interp_range
+
+        print(final_matches)
+
         return final_matches
 
-    def get_ranges(self, seq):
+    @staticmethod
+    def get_ranges(seq):
         ranges = []
         for k, g in groupby(enumerate(seq), lambda t: t[0]-t[1]):
             temp = list(map(itemgetter(1), g))
-            # if len(temp) >= self.min_lines_matched:
-            #     ranges += temp
             ranges += temp
         return ranges
