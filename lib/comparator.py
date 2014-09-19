@@ -63,14 +63,24 @@ class Comparator:
         :return: A percentage of the number of lines matched in the smaller file.
         This does not include blank lines, because we don't match on blank lines and want to me consistent
         """
-        num_matches = sum(len(x) for x in line_ranges)
-        num_lines_1 = sub_a.file_contents.count("\n")
-        percent_1 = num_matches/num_lines_1
 
-        num_lines_2 = sub_b.file_contents.count("\n")
-        percent_2 = num_matches/num_lines_2
+        # get all the unique values of a and b
+        a_all = {}
+        b_all = {}
+        for l_range in line_ranges:
+            for match in l_range:
+                a_all[match[0]] = ""
+                b_all[match[1]] = ""
 
-        return min(int(max(percent_1, percent_2)*100), 100)
+        num_matches_a = len(a_all)
+        num_lines_a = sub_a.file_contents.count("\n")
+        percent_a = num_matches_a/num_lines_a
+
+        num_matches_b = len(b_all)
+        num_lines_b = sub_b.file_contents.count("\n")
+        percent_b = num_matches_b/num_lines_b
+
+        return int(max(percent_a, percent_b)*100)
 
     def compare_fingerprints(self, f_1, f_2):
         """
@@ -92,8 +102,12 @@ class Comparator:
             all_matches += zip(dict_f_1[match], dict_f_2[match])
         all_matches = sorted(list(set(all_matches)))
 
+        # get rid of duplicate matches coming from the same line (keep the smallest corresponding line numbers)
+        all_matches = self.filter_duplicates(all_matches)
+
         # interpolate the matches, then get rid of outliers
         all_matches = self.interpolate(all_matches)
+
         filtered_matches = self.remove_outlying_matches(all_matches)
 
         # group consecutive matches
@@ -119,6 +133,21 @@ class Comparator:
 
         return sorted(match_seq + extra_matches)
 
+    @staticmethod
+    def filter_duplicates(seq):
+        """
+        :param seq: A sorted list of tuples
+        :return: The same list, but with duplicates in the first elemtnt removed
+        Example, [(1, 1), (1, 2), (1, 3), (2, 2)] -> [(1, 1), (2, 2)]
+        """
+        result = [seq[0]]
+        prev_a = seq[0][0]
+        for i in range(1, len(seq)):
+            if not seq[i][0] == prev_a:
+                result.append(seq[i])
+                prev_a = seq[i][0]
+        return result
+
     def remove_outlying_matches(self, match_seq):
         """
         :param match_seq: An ordered list of tuples
@@ -141,7 +170,7 @@ class Comparator:
         :return: The list, after removing elements which aren't in sufficiently large groups of consecutive numbers
         """
         result = []
-        for k, g in groupby(enumerate(list(set(seq))), lambda t: t[0]-t[1]):
+        for k, g in groupby(enumerate(sorted(list(set(seq)))), lambda t: t[0]-t[1]):
             temp = list(map(itemgetter(1), g))
             if len(temp) >= self.min_lines_matched:
                 result += temp
