@@ -17,7 +17,8 @@
 
 .file-list-container {
     margin: 0 auto;
-    width: 700px;
+    min-width: 500px;
+    max-width: 800px;
 }
 
 .heading {
