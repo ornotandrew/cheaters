@@ -3,7 +3,9 @@ $(document).ready(function(){
     // redirects click event of button to input type file
     $("#id_fake_file_button").click(
         function () {
+            $("#uploadform").disabled = true;
             $("#id_file").click();
+
         }
     )
 
@@ -39,7 +41,8 @@ $(document).ready(function(){
         },
          error: function(response)
          {
-            console.log("failure")
+            console.log(response)
+
          }
         });
         e.preventDefault(); //Prevent Default action.

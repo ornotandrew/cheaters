@@ -23,7 +23,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Date</th>
-                                <th>Comment</th>
+                                <th>Description</th>
 
                             </tr>
                         </thead>
@@ -40,7 +40,11 @@
                                         {{ report.date }}
                                     </a>
                                 </td>
-
+                                <td>
+                                    <a href="{% url 'report_file_list' report.id %}">
+                                        {{ report.description }}
+                                    </a>
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>

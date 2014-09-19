@@ -23,12 +23,21 @@ class UploadFileView(FormView):
 
     def form_valid(self, form):
 
-        print("year: ", form.cleaned_data["year"])
-        print("description: ", form.cleaned_data["description"])
-        print("param_n: ", form.cleaned_data["param_n"])
-        print("param_t: ", form.cleaned_data["param_t"])
-        sub_controller = SubmissionController(form.cleaned_data['file'])
+        file = form.cleaned_data["file"]
+        del form.cleaned_data["file"]
+        description = form.cleaned_data["description"]
+        del form.cleaned_data["description"]
+
+        parameters = {}
+
+        for key, value in form.cleaned_data.items():
+            if value is not None:
+                parameters[key] = value
+
+
+        sub_controller = SubmissionController(file, description, **parameters)
         #cProfile.runctx("SubmissionController(form.cleaned_data['file'])", locals(), globals(), "temp/profile.prof")
+
         self.report = sub_controller.report
         response = {"report_id": self.report.id}
         response = json.dumps(response)
@@ -37,6 +46,7 @@ class UploadFileView(FormView):
 
     def form_invalid(self, form):
         data = json.dumps(form.errors)
+
         return HttpResponse(data, status=400, content_type='application/json')
 
 
@@ -115,6 +125,7 @@ class ReportListView(View):
                 "year": datetime.now().year,
                 "report_list": report_list,
             })
+
 
 def highlight(file, match_ranges, index):
     col = ["#cc3f3f ", "#379fd8", "#87c540", "#be7cd2", "#ff8ecf", "#e5e155"]

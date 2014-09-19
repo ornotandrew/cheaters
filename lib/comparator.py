@@ -5,8 +5,7 @@ from app.models import Submission
 
 
 class Comparator:
-    def __init__(self, submission_list, compare_history=False, comparison_year=2012,
-                 min_lines_matched=3, separation_allowance=2, match_threshold=10):
+    def __init__(self, submission_list, compare_history=False, **kwargs):
         """
         The process is as follows:
             get fingerprints -> compare
@@ -14,12 +13,12 @@ class Comparator:
         """
 
         # The minimum number of consecutive matched lines to consider
-        self.min_lines_matched = min_lines_matched
+        self.min_lines_matched = kwargs.get("min_lines_matched", 3)
         # The number of lines in a larger, matching block which are allowed to not match but still be included 
         # This is for when someone adds a comment in the middle of something they copied
-        self.separation_allowance = separation_allowance
+        self.separation_allowance = kwargs.get("separation_allowance", 2)
         # The minimum percentage match which we care about
-        self.match_threshold = match_threshold
+        self.match_threshold = kwargs.get("match_threshold", 10)
 
         # this report object should contain dictionaries of the form
         # {filename_1, filename_2, percent_match, line_matches}
@@ -34,7 +33,7 @@ class Comparator:
 
         # Compare to historical data
         if compare_history:
-            history_list = Submission.objects.filter(date__gte=datetime.date(comparison_year, 1, 1))\
+            history_list = Submission.objects.filter(date__gte=datetime.date(kwargs.get("comparison_year", 2012), 1, 1))\
                                              .exclude(submission_id=submission_list[0].submission_id)
             for submission in history_list:
                 submission.fingerprint = eval(submission.fingerprint)

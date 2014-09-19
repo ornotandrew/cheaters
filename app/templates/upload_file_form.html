@@ -1,51 +1,53 @@
-<form class="form-horizontal" id="uploadform" action="{% url "fileupload" %}" method="post" enctype="multipart/form-data" >
-    <div class="form-group">
-        <input class="file-input-hidden" id="id_file" name="file" type="file"/>
-        <span class="col-xs-2">
-            <input class="btn btn-primary upload-form col-xs-2" id="id_fake_file_button" type="button" value="Select zip file" />
-            <label class="control-label" for="id_file" id="id_file_name"></label>
-        </span>
-    </div>
-    <div class="form-group">
-        <span class="col-xs-2">
-            <input class="input-sm" id="id_param_t" name="param_t" type="text" placeholder="t"/>
-        </span>
-    </div>
-    <div class="form-group">
-        <span class="col-xs-2">
-            <input class="input-sm" id="id_param_n" name="param_n" type="text" placeholder="n"/>
-        </span>
-    </div>
-    <div class="form-group">
-        <span class="col-xs-2">
-            <input class="input-sm" id="id_param_min_lines_matched" name="min_lines_matched" type="text" placeholder="Min lines matched" />
-        </span>
-    </div>
-    <div class="form-group">
-        <span class="col-xs-2">
-            <input class="input-sm" id="id_separation_allowance" name="separation_allowance" type="text" placeholder="Separation allowance" />
-        </span>
-    </div>
-    <div class="form-group">
-        <span class="col-xs-2">
-            <input class="input-sm" id="id_match_threshold" name="match_threshold" type="text" placeholder="Match threshold" />
-        </span>
-    </div>
-    <div class="form-group">
-        <span class="col-xs-2">
-            <input class="input-sm" id="id_compare_from_year" name="year" type="text" placeholder="Compare from year" />
-        </span>
-    </div>
-    <div class="form-group">
-        <span class="col-xs-2">
-            <input class="input-sm" id="id_Description" name="description" type="text" placeholder="Description" />
-        </span>
-    </div>
-    <div class="form-group">
-        <span class="col-xs-2">
-            <input class="btn btn-primary" type="submit" value="Submit"/>
-        </span>
-    </div>
-</form>
-
+<div class="heading">Upload ZIP File</div>
+<div>
+    <form class="form-horizontal" id="uploadform" action="{% url "fileupload" %}" method="post" enctype="multipart/form-data" >
+        <div class="form-group">
+            <input class="file-input-hidden" id="id_file" name="file" type="file"/>
+            <span class="col-xs-2">
+                <input class="btn btn-primary upload-form col-xs-2" id="id_fake_file_button" type="button" value="Select zip file" />
+                <label class="control-label" for="id_file" id="id_file_name"></label>
+            </span>
+        </div>
+        <div class="form-group">
+            <span class="col-xs-2">
+                <input class="input-sm" id="id_Description" name="description" type="text" placeholder="Description" />
+            </span>
+        </div>
+        <div class="form-group">
+            <span class="col-xs-2">
+                <input class="input-sm" id="id_compare_from_year" name="year" type="text" placeholder="Compare from year" />
+            </span>
+        </div>
+        <div class="form-group">
+            <span class="col-xs-2">
+                <input class="input-sm" id="id_param_t" name="param_t" type="text" placeholder="t"/>
+            </span>
+        </div>
+        <div class="form-group">
+            <span class="col-xs-2">
+                <input class="input-sm" id="id_param_n" name="param_n" type="text" placeholder="n"/>
+            </span>
+        </div>
+        <div class="form-group">
+            <span class="col-xs-2">
+                <input class="input-sm" id="id_param_min_lines_matched" name="min_lines_matched" type="text" placeholder="Min lines matched" />
+            </span>
+        </div>
+        <div class="form-group">
+            <span class="col-xs-2">
+                <input class="input-sm" id="id_separation_allowance" name="separation_allowance" type="text" placeholder="Separation allowance" />
+            </span>
+        </div>
+        <div class="form-group">
+            <span class="col-xs-2">
+                <input class="input-sm" id="id_match_threshold" name="match_threshold" type="text" placeholder="Match threshold" />
+            </span>
+        </div>
+        <div class="form-group">
+            <span class="col-xs-2">
+                <input class="btn btn-primary" type="submit" value="Submit"/>
+            </span>
+        </div>
+    </form>
+</div>
 

@@ -15,13 +15,13 @@ class Fingerprinter:
     This guarantees point (1) above
     """
 
-    def __init__(self, source, filename):
+    def __init__(self, source, filename, **kwargs):
         """
         The process here is as follows:
             normalize -> generate ngrams -> hash ngrams -> winnow
         """
-        n = 7
-        t = 10
+        n = kwargs.get("param_n", 7)
+        t = kwargs.get("param_t", 10)
         w = t - n + 1
 
         pre = Preprocessor(source, filename)
