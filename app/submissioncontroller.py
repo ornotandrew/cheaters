@@ -8,7 +8,7 @@ import datetime
 
 class SubmissionController:
 
-    def __init__(self, file, description, admin_submission=True, **kwargs):
+    def __init__(self, file, description, user_id=None, admin_submission=True, **kwargs):
         print("{0:<35}{1}".format("Process", "Time (s)"))
         print("--------------------------------------------")
         t_total = time()
@@ -19,7 +19,7 @@ class SubmissionController:
         if admin_submission:
             filehandler = FileHandler(file, description)
         else:
-            filehandler = FileHandler(file, description, batch=False)
+            filehandler = FileHandler(file, description, user_id, batch=False)
 
         submission_list = filehandler.submissions
         t = time()-t

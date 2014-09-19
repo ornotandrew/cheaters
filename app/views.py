@@ -59,8 +59,9 @@ class APIUploadFileView(FormView):
 
         if form.is_valid():
             file = form.cleaned_data["file"]
-            # TODO : fill in sub controller here
-
+            sub_controller = SubmissionController(file, description, user_id, admin_submission=False)
+            report = sub_controller.report
+            # TODO : what to send back after we have the report?
             response = {}
             response = json.dumps(response)
             return HttpResponse(response, content_type="application/json")
