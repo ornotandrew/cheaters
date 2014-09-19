@@ -6,7 +6,7 @@ import operator
 from datetime import datetime
 from app.submissioncontroller import SubmissionController
 from app.models import Report, Submission
-from app.forms import UploadFileForm
+from app.forms import UploadFileForm, APIUploadFileForm
 from django.views.generic import View, ListView
 from django.views.generic.edit import FormView
 from django.core.urlresolvers import reverse_lazy, reverse
@@ -48,6 +48,29 @@ class UploadFileView(FormView):
         data = json.dumps(form.errors)
 
         return HttpResponse(data, status=400, content_type='application/json')
+
+
+class APIUploadFileView(FormView):
+    """
+    View for API for third party applications to submit single user files to this system.
+    """
+
+    def post(self, user_id, description):
+        form_class = APIUploadFileForm
+        form = self.get_form(form_class)
+
+        if form.is_valid():
+            file = form.cleaned_data["file"]
+            # TODO : fill in sub controller here
+
+            response = {}
+            response = json.dumps(response)
+            return HttpResponse(response, content_type="application/json")
+
+        else:
+            data = json.dumps(form.errors)
+            return HttpResponse(data, status=400, content_type='application/json')
+
 
 
 class AboutView(View):

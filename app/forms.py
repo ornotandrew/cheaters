@@ -11,3 +11,7 @@ class UploadFileForm(forms.Form):
     min_lines_matched = forms.IntegerField(required=False)
     separation_allowance = forms.IntegerField(required=False)
     match_threshold = forms.IntegerField(required=False)
+
+
+class APIUploadFileForm(forms.Form):
+    file = forms.FileField()
