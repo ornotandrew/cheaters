@@ -6,7 +6,7 @@ from app.models import Submission
 
 class Comparator:
     def __init__(self, submission_list, compare_history=False, comparison_year=2012,
-                 min_lines_matched=3, separation_allowance=2, match_threshold=1):
+                 min_lines_matched=3, separation_allowance=2, match_threshold=10):
         """
         The process is as follows:
             get fingerprints -> compare
@@ -71,7 +71,7 @@ class Comparator:
         num_lines_2 = sub_b.file_contents.count("\n")
         percent_2 = num_matches/num_lines_2
 
-        return int(max(percent_1, percent_2)*100)
+        return min(int(max(percent_1, percent_2)*100), 100)
 
     def compare_fingerprints(self, f_1, f_2):
         """
@@ -142,7 +142,7 @@ class Comparator:
         :return: The list, after removing elements which aren't in sufficiently large groups of consecutive numbers
         """
         result = []
-        for k, g in groupby(enumerate(seq), lambda t: t[0]-t[1]):
+        for k, g in groupby(enumerate(list(set(seq))), lambda t: t[0]-t[1]):
             temp = list(map(itemgetter(1), g))
             if len(temp) >= self.min_lines_matched:
                 result += temp
