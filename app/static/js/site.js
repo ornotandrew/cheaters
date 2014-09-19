@@ -1,10 +1,20 @@
+
 $(document).ready(function(){
- $( "#id_file" ).on( 'change', function updateFileName( event ){
-    var input = $( this );
-    var label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-    $("#id_file_name").text(label);
-    });
+    // redirects click event of button to input type file
+    $("#id_fake_file_button").click(
+        function () {
+            $("#id_file").click();
+        }
+    )
+
+    // updates the filename label when a file has been chosen
+    $( "#id_file" ).on( "change", function updateFileName( event ){
+       var input = $( this );
+       var label = input.val().replace(/([^\\]*\\)*/,'');
+       $("#id_file_name").text(label);
+       });
 });
+
 
 //Callback handler for form submit event
 $(document).ready(function(){
@@ -25,7 +35,7 @@ $(document).ready(function(){
         success: function(response)
         {
             var report_id = $.parseJSON(response).report_id
-            window.open("/report/"+report_id, "_blank");
+            window.location = "/report/"+report_id
         },
          error: function(response)
          {
