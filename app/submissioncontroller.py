@@ -8,29 +8,32 @@ import datetime
 
 class SubmissionController:
     # TODO: name files consistently
-    def __init__(self, file, comparison_year=2012):
+    def __init__(self, file, description, **kwargs):
         print("{0:<35}{1}".format("Process", "Time (s)"))
         print("--------------------------------------------")
         t_total = time()
 
         # unzip the file and create the submission objects
         t = time()
-        filehandler = FileHandler(file)
+        filehandler = FileHandler(file, description)
         submission_list = filehandler.submissions
         t = time()-t
         print("{0:<35}{1:.5f}".format("Extracted "+str(len(submission_list))+" files", t))
 
-        # fill out the fingerprints of the submissions
+        # fill out the fingerprints and submission_id's of the submissions
         t = time()
+        self.submission_id = self.get_submission_id()
+
         for submission in submission_list:
-            fingerprinter = Fingerprinter(submission.file_contents, submission.filename)
+            submission.submission_id = self.submission_id
+            fingerprinter = Fingerprinter(submission.file_contents, submission.filename, **kwargs)
             submission.fingerprint = fingerprinter.fingerprint
         t = time()-t
         print("{0:<35}{1:.5f}".format("Generated fingerprints", t))
 
         # save the submissions for later use
         t = time()
-        self.submission_id = submission_list[0].submission_id
+
         Submission.objects.bulk_create(submission_list)
         # retrieve same submissions now that the db has given them all primary keys
 
@@ -44,7 +47,7 @@ class SubmissionController:
 
         # do the comparison and get the report
         t = time()
-        comparator = Comparator(submission_list, compare_history=True, comparison_year=comparison_year)
+        comparator = Comparator(submission_list, compare_history=True, **kwargs)
         t = time()-t
         print("{0:<35}{1:.5f}".format("Performed comparison", t))
 
@@ -52,9 +55,18 @@ class SubmissionController:
         t = time()
         self.report = Report()
         self.report.submission_id = self.submission_id
+        self.report.description = description
         self.report.match_list = comparator.report
         self.report.save()
         t = time()-t
         print("{0:<35}{1:.5f}".format("Saved report with ID "+str(self.report.id), t))
         t_total = time()-t_total
         print("{0:<35}{1:.5f}".format("TOTAL", t_total))
+
+    def get_submission_id(self):
+        """
+        :return: The increment of the current highest submission id
+        """
+        query = Submission.objects.order_by("-submission_id")
+
+        return 1 if not query else query[0].submission_id + 1

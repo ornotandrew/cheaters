@@ -10,10 +10,10 @@ import mimetypes
 
 class FileHandler():
 
-    def __init__(self, file):
+    def __init__(self, file, description):
 
-        self.submission_id = self.get_submission_id()
         self.submissions = []
+        self.description = description
         if zipfile.is_zipfile(file):
             self.process_zipfile(file)
 
@@ -52,7 +52,7 @@ class FileHandler():
                         else:
                             # if a different user_id make a new submission
                             submission = Submission()
-                            submission.submission_id = self.submission_id
+                            submission.description = self.description
                             submission.user_id = user_id
                             print(submission.user_id)
                             submission.filename = os.path.basename(file_path)
@@ -64,10 +64,4 @@ class FileHandler():
 
 
 
-    def get_submission_id(self):
-        """
-        :return: The increment of the current highest submission id
-        """
-        query = Submission.objects.order_by("-submission_id")
 
-        return 0 if not query else query[0].submission_id + 1
