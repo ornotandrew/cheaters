@@ -7,7 +7,7 @@ import datetime
 
 
 class SubmissionController:
-    # TODO: name files consistently
+
     def __init__(self, file, description, **kwargs):
         print("{0:<35}{1}".format("Process", "Time (s)"))
         print("--------------------------------------------")
@@ -63,7 +63,8 @@ class SubmissionController:
         t_total = time()-t_total
         print("{0:<35}{1:.5f}".format("TOTAL", t_total))
 
-    def get_submission_id(self):
+    @staticmethod
+    def get_submission_id():
         """
         :return: The increment of the current highest submission id
         """

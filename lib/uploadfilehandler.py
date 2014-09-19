@@ -32,7 +32,7 @@ class FileHandler():
                     # check if file is text and not binary
                     filetype = mimetypes.guess_type(file_path)[0]
                     # filters out mac generated files which aren't detected by mimetypes
-                    if not file_path.__contains__("__MACOSX"):
+                    if not file_path.__contains__("__MACOSX") and "text/" in filetype:
 
                         dirname = os.path.dirname(file_path)
                         user_id = dirname.split("/")[0]
