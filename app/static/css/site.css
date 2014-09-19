@@ -17,7 +17,8 @@
 
 .file-list-container {
     margin: 0 auto;
-    width: 700px;
+    min-width: 500px;
+    max-width: 800px;
 }
 
 .heading {
@@ -70,16 +71,24 @@
 }
 
 .upload-form-container {
-    width: 275px;
+    margin-right: 10px;
+}
 
+#uploadform {
+    margin-left: 16px;
 }
 
 .upload-form-container input[type="submit"], input[type="button"] {
-    width: 120px;
+    width: 172px;
 }
 
 .file-input-hidden {
+    height: 0px;
     visibility: hidden;
+}
+
+#id_file_name {
+    width: 172px;
 }
 
 .filename-for-api {
