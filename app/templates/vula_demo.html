@@ -3,4 +3,26 @@
 
 {% block content %}
 
+This zip file should be named as a student number and contain no folders
+
+<div>
+    <form class="form-horizontal" id="apiform" action="{% url "index" %}" method="post" enctype="multipart/form-data" >
+
+        <div class="form-group">
+            <input class="file-input-hidden" id="id_file" name="file" type="file"/>
+            <span class="col-xs-2">
+                <input class="btn btn-primary upload-form col-xs-2" id="id_fake_file_button" type="button" value="Select zip file" />
+                <label class="control-label filename-for-api" for="id_file" id="id_file_name"></label>
+            </span>
+        </div>
+
+        <div class="form-group">
+            <span class="col-xs-2">
+                <input class="btn btn-primary" type="submit" value="Submit"/>
+            </span>
+        </div>
+
+    </form>
+</div>
+
 {% endblock %}

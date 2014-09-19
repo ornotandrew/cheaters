@@ -126,6 +126,13 @@ class ReportListView(View):
                 "report_list": report_list,
             })
 
+class VulaDemoView(View):
+    """
+    Provides a simple button to use the API
+    """
+    def get(self, request):
+        return render(request, "vula_demo.html")
+
 
 def highlight(file, match_ranges, index):
     col = ["#cc3f3f ", "#379fd8", "#87c540", "#be7cd2", "#ff8ecf", "#e5e155"]

@@ -82,3 +82,14 @@
     visibility: hidden;
 }
 
+.filename-for-api {
+    margin-left: 10px;
+}
+
+.zip-example {
+    display: inline-block;
+    border-radius: 3px;
+    padding: 10px;
+    /*color: rgb(200, 200, 200);*/
+    background-color: rgb(200,200,200);
+}

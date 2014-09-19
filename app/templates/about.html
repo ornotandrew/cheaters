@@ -1,6 +1,22 @@
 {% extends "layout.html" %}
 {% block content %}
 
+    <div class="heading">Format for submission file</div>
+    Submissions need to be uploaded as a zip file. The root of this zip file should contain folders named as users. Each folder should contain the source files belonging to that specific user.
+    An example is shown below. </br></br>
+    <div class="zip-example">
+        Assignment1.zip </br>
+        &mdash; John/ </br>
+        &mdash;&mdash; Question1.py </br>
+        &mdash;&mdash; Question2.py </br>
+        &mdash; Mary/ </br>
+        &mdash;&mdash; Question1.py </br>
+        &mdash;&mdash; Question2.py </br>
+    </div>
+
+
+    </br></br>
+
     <div class="text-left heading">Parameters</div>
 
     <table class="table table-striped box-glow">
@@ -12,6 +28,20 @@
             </tr>
         </thead>
         <tbody>
+            <tr>
+                <td><b>Description</b></td>
+                <td>Compulsory field</td>
+                <td>
+                    Something which will help you identify this submission at a later stage. This is the only required field.
+                </td>
+            </tr>
+            <tr>
+                <td><b>Compare from year</b></td>
+                <td>None</td>
+                <td>
+                    If you are comparing to past submissions, only submissions which were submitted on this year or later will be considered. Leaving this blank means no history comparisons will be made.
+                </td>
+            </tr>
             <tr>
                 <td><b>t</b></td>
                 <td>10</td>
@@ -47,22 +77,9 @@
                     This is a percentage. All matches smaller than this will be discarded.
                 </td>
             </tr>
-            <tr>
-                <td><b>Compare from year</b></td>
-                <td>None</td>
-                <td>
-                    If you are comparing to past submissions, only submissions which were submitted on this year or later will be considered. Leaving this blank means no history comparisons will be made.
-                </td>
-            </tr>
-            <tr>
-                <td><b>Description</b></td>
-                <td>None</td>
-                <td>
-                    Something which will help you identify this submission at a later stage.
-                </td>
-            </tr>
         </tbody>
     </table>
+    </br></br>
 
     <div class="heading">Authors</div>
     <p>
