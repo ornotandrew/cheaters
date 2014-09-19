@@ -8,21 +8,26 @@ import datetime
 
 class SubmissionController:
 
-    def __init__(self, file, description, **kwargs):
+    def __init__(self, file, description, admin_submission=True, **kwargs):
         print("{0:<35}{1}".format("Process", "Time (s)"))
         print("--------------------------------------------")
         t_total = time()
 
         # unzip the file and create the submission objects
         t = time()
-        filehandler = FileHandler(file, description)
+        filehandler = None
+        if admin_submission:
+            filehandler = FileHandler(file, description)
+        else:
+            filehandler = FileHandler(file, description, batch=False)
+
         submission_list = filehandler.submissions
         t = time()-t
         print("{0:<35}{1:.5f}".format("Extracted "+str(len(submission_list))+" files", t))
 
         # fill out the fingerprints and submission_id's of the submissions
         t = time()
-        self.submission_id = self.get_submission_id()
+        self.submission_id = self.get_submission_id() if admin_submission else -1
 
         for submission in submission_list:
             submission.submission_id = self.submission_id
@@ -34,14 +39,15 @@ class SubmissionController:
         # save the submissions for later use
         t = time()
 
-        Submission.objects.bulk_create(submission_list)
-        # retrieve same submissions now that the db has given them all primary keys
+        if admin_submission:
+            Submission.objects.bulk_create(submission_list)
+            # retrieve same submissions now that the db has given them all primary keys
 
-        submission_list = Submission.objects.filter(submission_id=self.submission_id)
+            submission_list = Submission.objects.filter(submission_id=self.submission_id)
 
-        # eval all the fingerprints from string to list
-        for submission in submission_list:
-            submission.fingerprint = eval(submission.fingerprint)
+            # eval all the fingerprints from string to list
+            for submission in submission_list:
+                submission.fingerprint = eval(submission.fingerprint)
         t = time()-t
         print("{0:<35}{1:.5f}".format("Saved submissions with ID "+str(self.submission_id), t))
 
@@ -57,7 +63,8 @@ class SubmissionController:
         self.report.submission_id = self.submission_id
         self.report.description = description
         self.report.match_list = comparator.report
-        self.report.save()
+        if admin_submission:
+            self.report.save()
         t = time()-t
         print("{0:<35}{1:.5f}".format("Saved report with ID "+str(self.report.id), t))
         t_total = time()-t_total
