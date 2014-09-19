@@ -13,5 +13,5 @@ urlpatterns = patterns('',
     url(r'^report/(?P<report_id>[0-9]+)/$', views.ReportView.as_view(), name="report_file_list"),
     url(r'^report/list/$', views.ReportListView.as_view(), name="report_list"),
     url(r'^vulademo$', views.VulaDemoView.as_view(), name="vula_demo"),
-    url(r'^api/upload/(?P<user_id>[a-zA-Z]+)/(?P<description>[a-zA-Z0-9]+)/$', csrf_exempt(views.APIUploadFileView.as_view()) , name="apifileupload"),
+    url(r'^api/upload/(?P<user_id>[0-9a-zA-Z]+)/(?P<description>[0-9a-zA-Z]+)/$',  csrf_exempt(views.APIUploadFileView.as_view()), name="apifileupload"),
 )

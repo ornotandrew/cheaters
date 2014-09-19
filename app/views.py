@@ -53,23 +53,24 @@ class APIUploadFileView(FormView):
     View for API for third party applications to submit single user files to this system.
     """
 
-    def post(self, user_id, description):
+    def post(self, request, user_id, description):
+
         form_class = APIUploadFileForm
         form = self.get_form(form_class)
 
         if form.is_valid():
             file = form.cleaned_data["file"]
-            sub_controller = SubmissionController(file, description, user_id, admin_submission=False)
+            sub_controller = SubmissionController(file, user_id, description, admin_submission=False)
             report = sub_controller.report
             # TODO : what to send back after we have the report?
-            response = {}
+
+            response = {report.match_list}
             response = json.dumps(response)
             return HttpResponse(response, content_type="application/json")
 
         else:
             data = json.dumps(form.errors)
             return HttpResponse(data, status=400, content_type='application/json')
-
 
 
 class AboutView(View):
