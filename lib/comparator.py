@@ -5,7 +5,7 @@ from app.models import Submission
 
 
 class Comparator:
-    def __init__(self, submission_list, compare_history=False, **kwargs):
+    def __init__(self, submission_list, **kwargs):
         """
         The process is as follows:
             get fingerprints -> compare
@@ -31,9 +31,12 @@ class Comparator:
             if result["percent_match"] > self.match_threshold:
                 self.report.append(result)
 
+        comparison_year = kwargs.get("year", -1)
+        compare_history = False if comparison_year is -1 else True
+
         # Compare to historical data
         if compare_history:
-            history_list = Submission.objects.filter(date__gte=datetime.date(kwargs.get("comparison_year", 2012), 1, 1))\
+            history_list = Submission.objects.filter(date__gte=datetime.date(comparison_year, 1, 1))\
                                              .exclude(submission_id=submission_list[0].submission_id)
             for submission in history_list:
                 submission.fingerprint = eval(submission.fingerprint)

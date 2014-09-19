@@ -34,9 +34,7 @@ class UploadFileView(FormView):
             if value is not None:
                 parameters[key] = value
 
-
         sub_controller = SubmissionController(file, description, **parameters)
-        #cProfile.runctx("SubmissionController(form.cleaned_data['file'])", locals(), globals(), "temp/profile.prof")
 
         self.report = sub_controller.report
         response = {"report_id": self.report.id}
