@@ -3,44 +3,52 @@
 
 {% block content %}
 
+<table>
+    <tbody>
+        <tr>
+            <td class="testtabletopalign">
+                <div class="upload-form-container">
+                {% block uploadfile %}
+                    {% include "upload_file_form.html" %}
+                {% endblock %}
+                </div>
+            </td>
 
-<div class="text-center heading">List of Reports{{ report_id }}</div>
-<div class="file-list-container box-glow">
+            <td>
+                <div class="text-center heading">List of Reports{{ report_id }}</div>
+                <div class="file-list-container box-glow">
 
-    <table class="table table-striped table-hover table-links-block">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Date</th>
-                <th>Comment</th>
+                    <table class="table table-striped table-hover table-links-block">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Date</th>
+                                <th>Comment</th>
 
-            </tr>
-        </thead>
-        <tbody>
-            {% for report in report_list %}
-            <tr>
-                <td>
-                    <a href="{% url 'report_file_list' report.id %}">
-                        {{ report.id }}
-                    </a>
-                </td>
-                <td>
-                    <a href="{% url 'report_file_list' report.id %}">
-                        {{ report.date }}
-                    </a>
-                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for report in report_list %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'report_file_list' report.id %}">
+                                        {{ report.id }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{% url 'report_file_list' report.id %}">
+                                        {{ report.date }}
+                                    </a>
+                                </td>
 
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
 
-</div>
-
-<div class="upload-form-container">
-{% block uploadfile %}
-    {% include "upload_file_form.html" %}
-{% endblock %}
-</div>
-
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
 {% endblock %}

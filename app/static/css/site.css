@@ -3,6 +3,14 @@
     width: 100%;
 }
 
+.body-content table {
+    margin: 0 auto;
+}
+
+.body-content td {
+     vertical-align: top;
+}
+
 .emph {
     text-shadow: 0px 0px 5px #000;
 }
@@ -62,8 +70,9 @@
 }
 
 .upload-form-container {
-    position: absolute;
-    top: 130px;
+
+    width: 250px;
+
 }
 
 .upload-form-container input[type="submit"], input[type="button"] {
