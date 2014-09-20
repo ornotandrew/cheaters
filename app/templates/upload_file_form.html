@@ -1,5 +1,7 @@
 <div>
     <form class="form-horizontal" id="uploadform" action="{% url "fileupload" %}" method="post" enctype="multipart/form-data" >
+        <div class="form-group" id="error_messages">
+        </div>
         <div class="form-group">
             <input class="file-input-hidden" id="id_file" name="file" type="file"/>
             <span class="col-xs-2">
@@ -9,12 +11,12 @@
         </div>
         <div class="form-group">
             <span class="col-xs-2">
-                <input class="input-sm" id="id_Description" name="description" type="text" placeholder="*Description" />
+                <input class="input-sm" id="id_description" name="description" type="text" placeholder="*Description" />
             </span>
         </div>
         <div class="form-group">
             <span class="col-xs-2">
-                <input class="input-sm" id="id_compare_from_year" name="year" type="text" placeholder="Compare from year" />
+                <input class="input-sm" id="id_year" name="year" type="text" placeholder="Compare from year" />
             </span>
         </div>
         <div class="form-group">
@@ -29,7 +31,7 @@
         </div>
         <div class="form-group">
             <span class="col-xs-2">
-                <input class="input-sm" id="id_param_min_lines_matched" name="min_lines_matched" type="text" placeholder="Min lines matched" />
+                <input class="input-sm" id="id_min_lines_matched" name="min_lines_matched" type="text" placeholder="Min lines matched" />
             </span>
         </div>
         <div class="form-group">

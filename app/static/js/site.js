@@ -21,7 +21,7 @@ $(document).ready(function(){
 $(document).ready(function(){
     $("#uploadform").submit(function(e)
     {
-
+        $("ul[name=error_message]").remove();
         var formObj = $(this);
         var formURL = formObj.attr("action");
         var formData = new FormData(this);
@@ -38,11 +38,20 @@ $(document).ready(function(){
             var report_id = $.parseJSON(response).report_id
             window.location = "/report/"+report_id
         },
-         error: function(response)
-         {
-            console.log(response)
 
-         }
+        error: function(response)
+        {
+            console.log(response)
+            $.each($.parseJSON(response.responseText), function(element, error){
+                var ul = $("<ul>").attr({name: "error_message", class: "form-error-message"});
+                ul.text(element + ": " + error);
+
+                $("#error_messages").append(ul);
+
+            });
+
+
+        }
         });
         e.preventDefault(); //Prevent Default action.
 

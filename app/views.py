@@ -44,7 +44,7 @@ class UploadFileView(FormView):
 
     def form_invalid(self, form):
         data = json.dumps(form.errors)
-
+        print(data)
         return HttpResponse(data, status=400, content_type='application/json')
 
 
