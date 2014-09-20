@@ -36,7 +36,8 @@ class FileHandler():
                     # check if file is text and not binary
                     filetype = mimetypes.guess_type(file_path)[0]
                     # filters out mac generated files which aren't detected by mimetypes
-                    if not file_path.__contains__("__MACOSX") and "text/" in filetype:
+
+                    if not file_path.__contains__("__MACOSX") and (filetype is not None) and "text/" in filetype:
 
                         dirname = os.path.dirname(file_path)
                         user_id = dirname.split("/")[0]
@@ -58,7 +59,6 @@ class FileHandler():
                             submission = Submission()
                             submission.description = self.description
                             submission.user_id = user_id
-                            print(submission.user_id)
                             submission.filename = os.path.basename(file_path)
                             file = zip.open(file_path)
                             submission.file_contents = file.read().decode('utf-8', "ignore")
