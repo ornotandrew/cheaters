@@ -143,6 +143,9 @@ class Comparator:
         :return: The same list, but with duplicates in the first elemtnt removed
         Example, [(1, 1), (1, 2), (1, 3), (2, 2)] -> [(1, 1), (2, 2)]
         """
+        if len(seq) == 0:
+            return []
+
         result = [seq[0]]
         prev_a = seq[0][0]
         for i in range(1, len(seq)):
