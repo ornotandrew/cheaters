@@ -36,8 +36,8 @@ class UploadFileView(FormView):
 
         sub_controller = SubmissionController(file, description, **parameters)
 
-        self.report = sub_controller.report
-        response = {"report_id": self.report.id}
+        report = sub_controller.report
+        response = {"report_id": report.id}
         response = json.dumps(response)
 
         return HttpResponse(response, content_type="application/json")
@@ -62,9 +62,10 @@ class APIUploadFileView(FormView):
             file = form.cleaned_data["file"]
             sub_controller = SubmissionController(file, user_id, description, admin_submission=False)
             report = sub_controller.report
-            # TODO : what to send back after we have the report?
 
-            response = {report.match_list}
+            report.match_list.sort(key=operator.itemgetter("percent_match"), reverse=True)
+            percent_match = report.match_list[0].get("percent_match") if report.match_list else 0
+            response = {"percent_match": percent_match}
             response = json.dumps(response)
             return HttpResponse(response, content_type="application/json")
 
