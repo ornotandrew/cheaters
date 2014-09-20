@@ -6,19 +6,22 @@ from pygments.util import ClassNotFound
 
 
 def normalize(source, filename):
+    """
+    :param source: raw source code
+    :param filename: filename of the source code to use relevant lexer
+    :return: normalized code, meaning all variable and method names were renamed
+    and all whitespace removed
+    """
     try:
         lexer = get_lexer_for_filename(filename)
-        #source = reformat(source, lexer, NormalizeFormatter())
+        source = format(lex(source, lexer), NormalizeFormatter())
+
     except ClassNotFound:
         print("no suitable lexer found")
 
     finally:
         source = source.replace(" ", "").replace("\n", "")
     return source
-
-
-def reformat(code, lexer, formatter):
-    return format(lex(code, lexer), formatter)
 
 
 class NormalizeFormatter(Formatter):

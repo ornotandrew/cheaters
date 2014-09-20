@@ -3,7 +3,6 @@ from lib.comparator import Comparator
 from lib.uploadfilehandler import FileHandler
 from lib.fingerprinter import Fingerprinter
 from time import time
-import datetime
 
 
 class SubmissionController:

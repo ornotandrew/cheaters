@@ -1,8 +1,10 @@
 from django.db import models
-from datetime import datetime
-# Create your models here.
+
 
 class Submission(models.Model):
+    """
+    this model stores the uploaded file contents and its fingerprints along with meta info
+    """
     id = models.AutoField(primary_key=True)
     submission_id = models.IntegerField()
     user_id = models.CharField(max_length=20)
@@ -14,6 +16,9 @@ class Submission(models.Model):
 
 
 class Report (models.Model):
+    """
+    this model stores the report for a particular submission
+    """
     id = models.AutoField(primary_key=True)
     submission_id = models.IntegerField()
     match_list = models.TextField()

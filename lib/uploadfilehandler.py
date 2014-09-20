@@ -1,12 +1,9 @@
-import datetime
 import os
-import shutil
 import zipfile
-from zipfile import ZipFile, ZIP_DEFLATED
-import io
+from zipfile import ZipFile
 from app.models import Submission
-from cheaters import settings
 import mimetypes
+
 
 class FileHandler():
 

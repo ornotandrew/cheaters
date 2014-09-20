@@ -1,28 +1,29 @@
 import cProfile
 import json
-from django.shortcuts import render, redirect
-from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
+from django.shortcuts import render
+from django.http import HttpResponse
 import operator
 from datetime import datetime
 from app.submissioncontroller import SubmissionController
 from app.models import Report, Submission
 from app.forms import UploadFileForm, APIUploadFileForm
-from django.views.generic import View, ListView
+from django.views.generic import View
 from django.views.generic.edit import FormView
-from django.core.urlresolvers import reverse_lazy, reverse
-
-import os
+from lib.source_highlighter import highlight
 
 
 class UploadFileView(FormView):
     """
+    This is the view to which batch files are uploaded through a form.
     :return: redirects to report_file_list with the report_id as a parameter
     """
 
     form_class = UploadFileForm
 
     def form_valid(self, form):
-
+        # if form contains no validation errors then process form
+        # delete the file and description keys from the dictionary after
+        # getting them to easily get the remaining parameters
         file = form.cleaned_data["file"]
         del form.cleaned_data["file"]
         description = form.cleaned_data["description"]
@@ -30,6 +31,7 @@ class UploadFileView(FormView):
 
         parameters = {}
 
+        # get the optional parameters which have been specified
         for key, value in form.cleaned_data.items():
             if value is not None:
                 parameters[key] = value
@@ -43,6 +45,7 @@ class UploadFileView(FormView):
         return HttpResponse(response, content_type="application/json")
 
     def form_invalid(self, form):
+        # send back validation errors
         data = json.dumps(form.errors)
         print(data)
         return HttpResponse(data, status=400, content_type='application/json')
@@ -51,6 +54,7 @@ class UploadFileView(FormView):
 class APIUploadFileView(FormView):
     """
     View for API for third party applications to submit single user files to this system.
+    :return: returns a percent match in a json object
     """
 
     def post(self, request, user_id, description):
@@ -151,6 +155,7 @@ class ReportListView(View):
                 "report_list": report_list,
             })
 
+
 class VulaDemoView(View):
     """
     Provides a simple button to use the API
@@ -159,13 +164,4 @@ class VulaDemoView(View):
         return render(request, "vula_demo.html")
 
 
-def highlight(file, match_ranges, index):
-    col = ["#cc3f3f ", "#379fd8", "#87c540", "#be7cd2", "#ff8ecf", "#e5e155"]
 
-    source = file.splitlines()
-    for i, match_range in enumerate(match_ranges):
-        for match in match_range:
-            line = match[index]
-            source[line-1] = r'<span style="color:'+col[i % len(col)]+r';">'+source[line-1]+r'</span>'
-
-    return "\n".join(source)

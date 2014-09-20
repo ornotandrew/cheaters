@@ -1,10 +1,11 @@
-from lib import normalizer
+from lib import lexer_tools
+
 
 class Preprocessor():
-    # TODO: THIS SHOULD NOT BE A CLASS
+
     def __init__(self, source, filename):
         self.line_map = self.create_line_map(source)
-        self.processed_source = normalizer.normalize(source, filename)
+        self.processed_source = lexer_tools.normalize(source, filename)
 
     def create_line_map(self, source):
         """
