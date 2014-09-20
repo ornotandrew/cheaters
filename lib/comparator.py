@@ -83,7 +83,7 @@ class Comparator:
         num_lines_b = sub_b.file_contents.count("\n")
         percent_b = num_matches_b/num_lines_b
 
-        return int(max(percent_a, percent_b)*100)
+        return min(int(max(percent_a, percent_b)*100), 100)
 
     def compare_fingerprints(self, f_1, f_2):
         """

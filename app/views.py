@@ -60,7 +60,8 @@ class APIUploadFileView(FormView):
 
         if form.is_valid():
             file = form.cleaned_data["file"]
-            sub_controller = SubmissionController(file, user_id, description, admin_submission=False)
+            kwargs = {"year": 2000}
+            sub_controller = SubmissionController(file, user_id, description, admin_submission=False, **kwargs)
             report = sub_controller.report
 
             report.match_list.sort(key=operator.itemgetter("percent_match"), reverse=True)

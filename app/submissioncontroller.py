@@ -15,7 +15,7 @@ class SubmissionController:
 
         # unzip the file and create the submission objects
         t = time()
-        filehandler = None
+
         if admin_submission:
             filehandler = FileHandler(file, description)
         else:
