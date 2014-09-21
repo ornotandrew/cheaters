@@ -2,6 +2,10 @@ from lib import lexer_tools
 
 
 class Preprocessor():
+    """
+    Removes whitespace and renames all variables and functions.
+    Generates a map between hashes and line numbers to be used when working back from comparison results
+    """
 
     def __init__(self, source, filename):
         self.line_map = self.create_line_map(source)
