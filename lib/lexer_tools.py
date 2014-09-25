@@ -14,7 +14,7 @@ def normalize(source, filename):
     """
     try:
         lexer = get_lexer_for_filename(filename)
-        source = format(lex(source, lexer), NormalizeFormatter())
+        #source = format(lex(source, lexer), NormalizeFormatter())
 
     except ClassNotFound:
         print("no suitable lexer found")
